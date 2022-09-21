@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "nepio",
+  "version": "${version}",
+  "name": "NepIO",
+  "description": "",
+  "authors": [
+    "SeaForm"
+  ],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/nepio/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "net.infstudio.nepio.client.NepIOClient"
+    ],
+    "main": [
+      "net.infstudio.nepio.NepIO"
+    ]
+  },
+  "mixins": [
+    "nepio.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.9",
+    "fabric": "*",
+    "minecraft": "1.18.2"
+  }
+}
