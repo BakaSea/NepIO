@@ -76,7 +76,7 @@ public class NepCable extends NIOBaseBlock {
         return getAllShape(state, world, pos, context);
     }
 
-    private static VoxelShape getStateShape(BlockState state) {
+    public static VoxelShape getStateShape(BlockState state) {
         return SHAPE_CACHE.computeIfAbsent(state, state1 -> {
             VoxelShape core = VoxelShapes.cuboid(0.375D, 0.375D, 0.375D, 0.625D, 0.625D, 0.625D);
             List<VoxelShape> sides = new ArrayList<>();

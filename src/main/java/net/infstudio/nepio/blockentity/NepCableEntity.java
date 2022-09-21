@@ -166,14 +166,15 @@ public class NepCableEntity extends NIOBaseBlockEntity {
     @Override
     public void useWrench(ItemUsageContext context) {
         World world = context.getWorld();
+        BlockPos blockPos = context.getBlockPos();
+        Vec3d hitPos = context.getHitPos();
+        Vec3d point = hitPos.subtract(new Vec3d(blockPos.getX(), blockPos.getY(), blockPos.getZ()));
         if (context.getPlayer().isSneaking()) {
-            BlockPos blockPos = context.getBlockPos();
-            Vec3d hitPos = context.getHitPos();
             for (var entry : partMap.entrySet()) {
                 Direction direction = entry.getKey();
                 PartBaseEntity part = entry.getValue();
                 VoxelShape partShape = part.getItem().getShape(direction);
-                if (touchBox(partShape.getBoundingBox(), hitPos.subtract(new Vec3d(blockPos.getX(), blockPos.getY(), blockPos.getZ())))) {
+                if (touchBox(partShape.getBoundingBox(), point)) {
                     world.spawnEntity(new ItemEntity(world, hitPos.x, hitPos.y, hitPos.z, new ItemStack(part.getItem())));
                     removePart(direction);
                     BlockState state = world.getBlockState(pos);
@@ -185,6 +186,26 @@ public class NepCableEntity extends NIOBaseBlockEntity {
             world.spawnEntity(new ItemEntity(world, hitPos.x, hitPos.y, hitPos.z, new ItemStack(blockItem)));
             for (PartBaseEntity part : partMap.values()) {
                 world.spawnEntity(new ItemEntity(world, hitPos.x, hitPos.y, hitPos.z, new ItemStack(part.getItem())));
+            }
+        } else {
+            BlockState state = world.getBlockState(blockPos);
+            VoxelShape shape = NepCable.getStateShape(state);
+            if (touchBox(shape.getBoundingBox(), point)) {
+                point = point.subtract(0.5D, 0.5D, 0.5D);
+                Direction direction = Direction.getFacing(point.x, point.y, point.z);
+                if (isBanConnect(direction)) {
+                    removeBanConnect(direction);
+                    PathService.INSTANCE.updateNetwork(networkNode);
+                    ConnectService.INSTANCE.updateConnection(this);
+                    markDirty();
+                } else {
+                    if (state.get(NepCable.PROPERTY_MAP.get(direction))) {
+                        addBanConnect(direction);
+                        PathService.INSTANCE.updateNetwork(networkNode);
+                        ConnectService.INSTANCE.updateConnection(this);
+                        markDirty();
+                    }
+                }
             }
         }
     }
