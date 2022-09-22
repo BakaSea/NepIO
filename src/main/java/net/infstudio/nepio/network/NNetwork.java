@@ -7,7 +7,6 @@ public class NNetwork {
 
     private int id;
     private Set<NNetworkNode> nodes;
-
     public NNetwork(int id) {
         this.id = id;
         this.nodes = new HashSet<>();

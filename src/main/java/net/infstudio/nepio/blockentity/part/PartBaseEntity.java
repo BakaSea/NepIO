@@ -7,6 +7,8 @@ import net.infstudio.nepio.network.api.INetworkEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.world.World;
 
 import java.util.List;
 
@@ -14,10 +16,12 @@ public class PartBaseEntity implements INetworkEntity {
 
     protected PartBaseItem item;
     protected NIOBaseBlockEntity blockEntity;
+    protected Direction direction;
 
-    public PartBaseEntity(PartBaseItem item, NIOBaseBlockEntity blockEntity) {
+    public PartBaseEntity(PartBaseItem item, NIOBaseBlockEntity blockEntity, Direction direction) {
         this.item = item;
         this.blockEntity = blockEntity;
+        this.direction = direction;
     }
 
     @Override
@@ -25,9 +29,17 @@ public class PartBaseEntity implements INetworkEntity {
         return blockEntity;
     }
 
+    public World getWorld() {
+        return blockEntity.getWorld();
+    }
+
+    public BlockPos getPos() {
+        return blockEntity.getPos();
+    }
+
     @Override
     public void setNetworkNode(NNetworkNode networkNode) {
-        //Do nothing
+
     }
 
     @Override
@@ -55,6 +67,10 @@ public class PartBaseEntity implements INetworkEntity {
 
     public PartBaseItem getItem() {
         return item;
+    }
+
+    public void onRemove() {
+
     }
 
 }

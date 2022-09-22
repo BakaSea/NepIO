@@ -25,8 +25,8 @@ public class InputPort extends PartBaseItem {
     }
 
     @Override
-    public PartBaseEntity createPartEntity(NIOBaseBlockEntity blockEntity) {
-        return new InputPortEntity(blockEntity);
+    public PartBaseEntity createPartEntity(NIOBaseBlockEntity blockEntity, Direction direction) {
+        return new InputPortEntity(blockEntity, direction);
     }
 
     @Override

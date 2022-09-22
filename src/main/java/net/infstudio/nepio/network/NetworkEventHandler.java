@@ -4,6 +4,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.infstudio.nepio.network.service.automation.TransferService;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
@@ -47,6 +48,7 @@ public class NetworkEventHandler implements ModInitializer {
     private void onServerEndTick(MinecraftServer server) {
         PathService.INSTANCE.pathFinding();
         ConnectService.INSTANCE.connectUpdating();
+        TransferService.ITEM_INSTANCE.doTransfer();
     }
 
 }

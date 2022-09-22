@@ -55,4 +55,8 @@ public class NNetworkNode {
         components.remove(component);
     }
 
+    public Set<IComponent> getComponents() {
+        return components;
+    }
+
 }

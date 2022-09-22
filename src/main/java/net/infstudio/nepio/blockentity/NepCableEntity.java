@@ -3,6 +3,7 @@ package net.infstudio.nepio.blockentity;
 import com.mojang.logging.LogUtils;
 import net.infstudio.nepio.blockentity.part.PartBaseEntity;
 import net.infstudio.nepio.item.part.IPartItem;
+import net.infstudio.nepio.network.NNetworkNode;
 import net.infstudio.nepio.network.service.ConnectService;
 import net.infstudio.nepio.network.service.PathService;
 import net.infstudio.nepio.registry.NIOBlocks;
@@ -55,6 +56,14 @@ public class NepCableEntity extends NIOBaseBlockEntity {
         super.writeNbt(nbt);
         nbt.putIntArray("ban", getDirectionIds(banConnect));
         writePartNbt(nbt);
+    }
+
+    @Override
+    public void setNetworkNode(NNetworkNode networkNode) {
+        super.setNetworkNode(networkNode);
+        for (PartBaseEntity entity : partMap.values()) {
+            entity.setNetworkNode(networkNode);
+        }
     }
 
     private int[] getDirectionIds(Collection<Direction> directions) {
@@ -115,7 +124,7 @@ public class NepCableEntity extends NIOBaseBlockEntity {
             if (!stack.isEmpty()) {
                 if (stack.getItem() instanceof IPartItem part) {
                     Direction direction = Direction.byId(i);
-                    PartBaseEntity partEntity = part.createPartEntity(this);
+                    PartBaseEntity partEntity = part.createPartEntity(this, direction);
                     partMap.put(direction, partEntity);
                     partEntity.readNbt(nbt.getCompound(direction.getName()));
                 }
@@ -149,10 +158,12 @@ public class NepCableEntity extends NIOBaseBlockEntity {
         partMap.put(direction, partEntity);
         PathService.INSTANCE.updateNetwork(networkNode);
         ConnectService.INSTANCE.updateConnection(this);
+        partEntity.setNetworkNode(networkNode);
         markDirty();
     }
 
     public void removePart(Direction direction) {
+        partMap.get(direction).onRemove();
         partMap.remove(direction);
         PathService.INSTANCE.updateNetwork(networkNode);
         ConnectService.INSTANCE.updateConnection(this);

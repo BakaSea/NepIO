@@ -34,7 +34,7 @@ public abstract class PartBaseItem extends BaseItem implements IPartItem {
             Direction direction = Direction.getFacing(point.x, point.y, point.z);
             if (!entity.existPart(direction)) {
                 if (!world.isClient()) {
-                    entity.addPart(direction, createPartEntity(entity));
+                    entity.addPart(direction, createPartEntity(entity, direction));
                     if (!context.getPlayer().isCreative()) {
                         context.getStack().decrement(1);
                     }

@@ -5,6 +5,7 @@ import net.infstudio.nepio.NepIO;
 import net.infstudio.nepio.item.BaseItem;
 import net.infstudio.nepio.item.Wrench;
 import net.infstudio.nepio.item.part.InputPort;
+import net.infstudio.nepio.item.part.OutputPort;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -17,7 +18,8 @@ public class NIOItems implements ModInitializer {
     private static ArrayList<ItemDef> itemDefs = new ArrayList<>();
 
     public static final ItemDef WRENCH = new ItemDef(new Wrench(), "wrench");
-    public static final ItemDef IMPORT_PORT = new ItemDef(new InputPort(), "input_port");
+    public static final ItemDef INPUT_PORT = new ItemDef(new InputPort(), "input_port");
+    public static final ItemDef OUTPUT_PORT = new ItemDef(new OutputPort(), "output_port");
 
     public void onInitialize() {
         for (ItemDef itemDef : itemDefs) {

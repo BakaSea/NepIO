@@ -6,28 +6,28 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.infstudio.nepio.blockentity.NIOBaseBlockEntity;
 import net.infstudio.nepio.item.part.PartBaseItem;
 import net.infstudio.nepio.network.NNetworkNode;
-import net.infstudio.nepio.network.api.automation.IInsertable;
+import net.infstudio.nepio.network.api.automation.IExtractable;
 import net.infstudio.nepio.registry.NIOItems;
 import net.minecraft.util.math.Direction;
 
 import java.util.function.Predicate;
 
-public class InputPortEntity extends PartBaseEntity {
+public class OutputPortEntity extends PartBaseEntity {
 
-    private IInsertable<ItemVariant> insertable;
+    private IExtractable<ItemVariant> extractable;
 
-    public InputPortEntity(NIOBaseBlockEntity blockEntity, Direction direction) {
-        super((PartBaseItem) NIOItems.INPUT_PORT.get(), blockEntity, direction);
-        insertable = buildInsertable();
+    public OutputPortEntity(NIOBaseBlockEntity blockEntity, Direction direction) {
+        super((PartBaseItem) NIOItems.OUTPUT_PORT.get(), blockEntity, direction);
+        extractable = buildExtractable();
     }
 
     @Override
     public void setNetworkNode(NNetworkNode networkNode) {
-        networkNode.addComponent(insertable);
+        networkNode.addComponent(extractable);
     }
 
-    private IInsertable<ItemVariant> buildInsertable() {
-        return new IInsertable<ItemVariant>() {
+    private IExtractable<ItemVariant> buildExtractable() {
+        return new IExtractable<ItemVariant>() {
 
             @Override
             public boolean isEnabled() {
@@ -60,7 +60,7 @@ public class InputPortEntity extends PartBaseEntity {
     @Override
     public void onRemove() {
         if (!getWorld().isClient()) {
-            getNetworkNode().removeComponent(insertable);
+            getNetworkNode().removeComponent(extractable);
         }
     }
 

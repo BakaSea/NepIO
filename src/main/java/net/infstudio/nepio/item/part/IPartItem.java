@@ -7,7 +7,7 @@ import net.minecraft.util.shape.VoxelShape;
 
 public interface IPartItem {
 
-    PartBaseEntity createPartEntity(NIOBaseBlockEntity blockEntity);
+    PartBaseEntity createPartEntity(NIOBaseBlockEntity blockEntity, Direction direction);
 
     VoxelShape getShape(Direction direction);
 
