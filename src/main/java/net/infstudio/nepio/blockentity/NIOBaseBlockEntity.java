@@ -12,6 +12,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.infstudio.nepio.network.NNetworkNode;
@@ -19,8 +20,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class NIOBaseBlockEntity extends BlockEntity implements INetworkEntity {
@@ -69,13 +69,15 @@ public abstract class NIOBaseBlockEntity extends BlockEntity implements INetwork
         return this;
     }
 
-    public void useWrench(ItemUsageContext context) {
+    public ActionResult useWrench(ItemUsageContext context) {
         World world = context.getWorld();
         if (context.getPlayer().isSneaking()) {
             world.removeBlock(context.getBlockPos(), false);
             Vec3d hitPos = context.getHitPos();
             world.spawnEntity(new ItemEntity(world, hitPos.x, hitPos.y, hitPos.z, new ItemStack(blockItem)));
+            return ActionResult.SUCCESS;
         }
+        return ActionResult.PASS;
     }
 
 }

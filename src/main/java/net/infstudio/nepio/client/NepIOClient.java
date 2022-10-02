@@ -4,8 +4,12 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
+import net.infstudio.nepio.client.gui.screen.FilterUpgradeScreen;
+import net.infstudio.nepio.client.gui.screen.IOPortScreen;
 import net.infstudio.nepio.client.render.NepCableBER;
 import net.infstudio.nepio.registry.NIOBlockEntities;
+import net.infstudio.nepio.registry.NIOScreenHandlers;
+import net.minecraft.client.gui.screen.ingame.HandledScreens;
 
 @Environment(EnvType.CLIENT)
 public class NepIOClient implements ClientModInitializer {
@@ -13,6 +17,9 @@ public class NepIOClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         BlockEntityRendererRegistry.register(NIOBlockEntities.NEP_CABLE_ENTITY, NepCableBER::new);
+
+        HandledScreens.register(NIOScreenHandlers.IO_PORT_SCREEN_HANDLER, IOPortScreen::new);
+        HandledScreens.register(NIOScreenHandlers.FILTER_UPGRADE_SCREEN_HANDLER, FilterUpgradeScreen::new);
     }
 
 }

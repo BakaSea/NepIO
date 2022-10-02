@@ -1,0 +1,10 @@
+{
+  "itemGroup.nepio.group": "Nep IO",
+  "item.nepio.wrench": "Wrench",
+  "item.nepio.input_port": "Input port",
+  "item.nepio.output_port": "Output port",
+  "item.nepio.filter_upgrade_basic": "Filter upgrade(Basic)",
+  "item.nepio.filter_upgrade_advanced": "Filter upgrade(Advanced)",
+  "item.nepio.filter_upgrade_ultimate": "Filter upgrade(Ultimate)",
+  "block.nepio.nep_cable": "Nep cable"
+}

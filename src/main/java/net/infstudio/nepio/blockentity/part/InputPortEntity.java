@@ -5,14 +5,17 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.infstudio.nepio.blockentity.NIOBaseBlockEntity;
 import net.infstudio.nepio.item.part.PartBaseItem;
-import net.infstudio.nepio.network.NNetworkNode;
+import net.infstudio.nepio.network.api.IComponent;
 import net.infstudio.nepio.network.api.automation.IInsertable;
 import net.infstudio.nepio.registry.NIOItems;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.Direction;
 
+import java.util.List;
 import java.util.function.Predicate;
 
-public class InputPortEntity extends PartBaseEntity {
+public class InputPortEntity extends IOPortEntity {
 
     private IInsertable<ItemVariant> insertable;
 
@@ -21,13 +24,8 @@ public class InputPortEntity extends PartBaseEntity {
         insertable = buildInsertable();
     }
 
-    @Override
-    public void setNetworkNode(NNetworkNode networkNode) {
-        networkNode.addComponent(insertable);
-    }
-
     private IInsertable<ItemVariant> buildInsertable() {
-        return new IInsertable<ItemVariant>() {
+        return new IInsertable<>() {
 
             @Override
             public boolean isEnabled() {
@@ -41,7 +39,10 @@ public class InputPortEntity extends PartBaseEntity {
 
             @Override
             public Predicate<ItemVariant> getFilter() {
-                return itemVariant -> true;
+                return itemVariant -> {
+                    if (filterUpgrade.getSize() > 0) return filterUpgrade.match(itemVariant);
+                    return true;
+                };
             }
 
             @Override
@@ -58,10 +59,13 @@ public class InputPortEntity extends PartBaseEntity {
     }
 
     @Override
-    public void onRemove() {
-        if (!getWorld().isClient()) {
-            getNetworkNode().removeComponent(insertable);
-        }
+    public List<IComponent> getComponents() {
+        return List.of(insertable);
+    }
+
+    @Override
+    public Text getDisplayName() {
+        return new TranslatableText(NIOItems.INPUT_PORT.get().getTranslationKey());
     }
 
 }

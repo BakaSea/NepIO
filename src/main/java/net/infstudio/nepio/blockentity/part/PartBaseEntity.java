@@ -3,16 +3,19 @@ package net.infstudio.nepio.blockentity.part;
 import net.infstudio.nepio.blockentity.NIOBaseBlockEntity;
 import net.infstudio.nepio.item.part.PartBaseItem;
 import net.infstudio.nepio.network.NNetworkNode;
+import net.infstudio.nepio.network.api.IComponent;
 import net.infstudio.nepio.network.api.INetworkEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
+import java.util.Collections;
 import java.util.List;
 
-public class PartBaseEntity implements INetworkEntity {
+public abstract class PartBaseEntity implements INetworkEntity {
 
     protected PartBaseItem item;
     protected NIOBaseBlockEntity blockEntity;
@@ -22,6 +25,10 @@ public class PartBaseEntity implements INetworkEntity {
         this.item = item;
         this.blockEntity = blockEntity;
         this.direction = direction;
+    }
+
+    public Direction getDirection() {
+        return direction;
     }
 
     @Override
@@ -55,6 +62,11 @@ public class PartBaseEntity implements INetworkEntity {
     @Override
     public boolean canConnect(BlockPos pos) {
         return false;
+    }
+
+    @Override
+    public List<IComponent> getComponents() {
+        return Collections.emptyList();
     }
 
     public void readNbt(NbtCompound nbt) {

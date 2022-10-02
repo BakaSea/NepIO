@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import net.infstudio.nepio.blockentity.part.PartBaseEntity;
 import net.infstudio.nepio.item.part.IPartItem;
 import net.infstudio.nepio.network.NNetworkNode;
+import net.infstudio.nepio.network.api.IComponent;
 import net.infstudio.nepio.network.service.ConnectService;
 import net.infstudio.nepio.network.service.PathService;
 import net.infstudio.nepio.registry.NIOBlocks;
@@ -14,7 +15,9 @@ import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
@@ -175,29 +178,27 @@ public class NepCableEntity extends NIOBaseBlockEntity {
     }
 
     @Override
-    public void useWrench(ItemUsageContext context) {
+    public ActionResult useWrench(ItemUsageContext context) {
+        if (context.getPlayer() == null) return ActionResult.PASS;
         World world = context.getWorld();
         BlockPos blockPos = context.getBlockPos();
         Vec3d hitPos = context.getHitPos();
         Vec3d point = hitPos.subtract(new Vec3d(blockPos.getX(), blockPos.getY(), blockPos.getZ()));
         if (context.getPlayer().isSneaking()) {
-            for (var entry : partMap.entrySet()) {
-                Direction direction = entry.getKey();
-                PartBaseEntity part = entry.getValue();
-                VoxelShape partShape = part.getItem().getShape(direction);
-                if (touchBox(partShape.getBoundingBox(), point)) {
-                    world.spawnEntity(new ItemEntity(world, hitPos.x, hitPos.y, hitPos.z, new ItemStack(part.getItem())));
-                    removePart(direction);
-                    BlockState state = world.getBlockState(pos);
-                    world.updateListeners(blockPos, state, state, Block.NOTIFY_LISTENERS);
-                    return;
-                }
+            PartBaseEntity pointPart = getPart(hitPos);
+            if (pointPart != null) {
+                world.spawnEntity(new ItemEntity(world, hitPos.x, hitPos.y, hitPos.z, new ItemStack(pointPart.getItem())));
+                removePart(pointPart.getDirection());
+                BlockState state = world.getBlockState(pos);
+                world.updateListeners(blockPos, state, state, Block.NOTIFY_LISTENERS);
+                return ActionResult.SUCCESS;
             }
             world.removeBlock(blockPos, false);
             world.spawnEntity(new ItemEntity(world, hitPos.x, hitPos.y, hitPos.z, new ItemStack(blockItem)));
             for (PartBaseEntity part : partMap.values()) {
                 world.spawnEntity(new ItemEntity(world, hitPos.x, hitPos.y, hitPos.z, new ItemStack(part.getItem())));
             }
+            return ActionResult.SUCCESS;
         } else {
             BlockState state = world.getBlockState(blockPos);
             VoxelShape shape = NepCable.getStateShape(state);
@@ -209,20 +210,50 @@ public class NepCableEntity extends NIOBaseBlockEntity {
                     PathService.INSTANCE.updateNetwork(networkNode);
                     ConnectService.INSTANCE.updateConnection(this);
                     markDirty();
+                    return ActionResult.SUCCESS;
                 } else {
                     if (state.get(NepCable.PROPERTY_MAP.get(direction))) {
                         addBanConnect(direction);
                         PathService.INSTANCE.updateNetwork(networkNode);
                         ConnectService.INSTANCE.updateConnection(this);
                         markDirty();
+                        return ActionResult.SUCCESS;
                     }
                 }
             }
+            return ActionResult.PASS;
         }
     }
 
     private static boolean touchBox(Box box, Vec3d point) {
         return box.minX <= point.x && point.x <= box.maxX && box.minY <= point.y && point.y <= box.maxY && box.minZ <= point.z && point.z <= box.maxZ;
+    }
+
+    @Override
+    public List<IComponent> getComponents() {
+        List<IComponent> components = new ArrayList<>();
+        for (PartBaseEntity part : partMap.values()) {
+            components.addAll(part.getComponents());
+        }
+        return components;
+    }
+
+    public PartBaseEntity getPart(Vec3d hitPos) {
+        BlockPos blockPos = getPos();
+        Vec3d point = hitPos.subtract(new Vec3d(blockPos.getX(), blockPos.getY(), blockPos.getZ()));
+        for (var entry : partMap.entrySet()) {
+            Direction direction = entry.getKey();
+            PartBaseEntity part = entry.getValue();
+            VoxelShape partShape = part.getItem().getShape(direction);
+            if (touchBox(partShape.getBoundingBox(), point)) {
+                return part;
+            }
+        }
+        return null;
+    }
+
+    public PartBaseEntity getPart(Direction direction) {
+        return partMap.get(direction);
     }
 
 }

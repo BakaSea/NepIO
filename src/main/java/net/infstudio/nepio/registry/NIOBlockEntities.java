@@ -13,9 +13,9 @@ public class NIOBlockEntities implements ModInitializer {
     public static final NIOBlockEntities INSTANCE = new NIOBlockEntities();
 
     public static final BlockEntityType<NepCableEntity> NEP_CABLE_ENTITY = Registry.register(
-            Registry.BLOCK_ENTITY_TYPE,
-            new Identifier(NepIO.MODID, "nep_cable_entity"),
-            FabricBlockEntityTypeBuilder.create(NepCableEntity::new, NIOBlocks.NEP_CABLE.get()).build()
+        Registry.BLOCK_ENTITY_TYPE,
+        new Identifier(NepIO.MODID, "nep_cable_entity"),
+        FabricBlockEntityTypeBuilder.create(NepCableEntity::new, NIOBlocks.NEP_CABLE.get()).build()
     );
 
     public void onInitialize() {

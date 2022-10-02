@@ -5,22 +5,18 @@ import net.infstudio.nepio.network.api.INetworkEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class NNetworkNode {
 
     private int id;
     private NNetwork network;
     private INetworkEntity entity;
-    private Set<IComponent> components;
 
     public NNetworkNode(int id, INetworkEntity entity) {
         this.id = id;
         this.entity = entity;
         this.network = null;
-        this.components = new HashSet<>();
     }
 
     public int getId() {
@@ -47,16 +43,8 @@ public class NNetworkNode {
         return entity.getPossibleConnection();
     }
 
-    public void addComponent(IComponent component) {
-        components.add(component);
-    }
-
-    public void removeComponent(IComponent component) {
-        components.remove(component);
-    }
-
-    public Set<IComponent> getComponents() {
-        return components;
+    public List<IComponent> getComponents() {
+        return entity.getComponents();
     }
 
 }

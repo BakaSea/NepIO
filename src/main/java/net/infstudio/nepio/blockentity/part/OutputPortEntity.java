@@ -5,14 +5,18 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.infstudio.nepio.blockentity.NIOBaseBlockEntity;
 import net.infstudio.nepio.item.part.PartBaseItem;
-import net.infstudio.nepio.network.NNetworkNode;
+import net.infstudio.nepio.network.api.upgrade.FilterUpgrade;
+import net.infstudio.nepio.network.api.IComponent;
 import net.infstudio.nepio.network.api.automation.IExtractable;
 import net.infstudio.nepio.registry.NIOItems;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.Direction;
 
+import java.util.List;
 import java.util.function.Predicate;
 
-public class OutputPortEntity extends PartBaseEntity {
+public class OutputPortEntity extends IOPortEntity {
 
     private IExtractable<ItemVariant> extractable;
 
@@ -21,13 +25,8 @@ public class OutputPortEntity extends PartBaseEntity {
         extractable = buildExtractable();
     }
 
-    @Override
-    public void setNetworkNode(NNetworkNode networkNode) {
-        networkNode.addComponent(extractable);
-    }
-
     private IExtractable<ItemVariant> buildExtractable() {
-        return new IExtractable<ItemVariant>() {
+        return new IExtractable<>() {
 
             @Override
             public boolean isEnabled() {
@@ -41,7 +40,10 @@ public class OutputPortEntity extends PartBaseEntity {
 
             @Override
             public Predicate<ItemVariant> getFilter() {
-                return itemVariant -> true;
+                return itemVariant -> {
+                    if (filterUpgrade.getSize() > 0) return filterUpgrade.match(itemVariant);
+                    return true;
+                };
             }
 
             @Override
@@ -58,10 +60,13 @@ public class OutputPortEntity extends PartBaseEntity {
     }
 
     @Override
-    public void onRemove() {
-        if (!getWorld().isClient()) {
-            getNetworkNode().removeComponent(extractable);
-        }
+    public List<IComponent> getComponents() {
+        return List.of(extractable);
+    }
+
+    @Override
+    public Text getDisplayName() {
+        return new TranslatableText(NIOItems.OUTPUT_PORT.get().getTranslationKey());
     }
 
 }

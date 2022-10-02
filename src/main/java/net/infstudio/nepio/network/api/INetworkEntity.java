@@ -18,4 +18,6 @@ public interface INetworkEntity {
 
     boolean canConnect(BlockPos pos);
 
+    List<IComponent> getComponents();
+
 }

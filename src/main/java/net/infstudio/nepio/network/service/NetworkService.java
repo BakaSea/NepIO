@@ -4,6 +4,8 @@ import com.mojang.logging.LogUtils;
 import net.infstudio.nepio.blockentity.NIOBaseBlockEntity;
 import net.infstudio.nepio.network.NNetwork;
 import net.infstudio.nepio.network.NNetworkNode;
+import net.infstudio.nepio.network.api.ComponentVisitor;
+import net.infstudio.nepio.network.api.IComponent;
 import net.infstudio.nepio.util.Trie01;
 import org.slf4j.Logger;
 
@@ -76,6 +78,14 @@ public class NetworkService {
         NNetwork n3 = NNetwork.merge(n1, n2);
         if (n3 == n1) removeNetwork(n2);
         else removeNetwork(n1);
+    }
+
+    public static <T> void visitNetwork(NNetwork network, ComponentVisitor<T> visitor) {
+        for (NNetworkNode node : network.getNodes()) {
+            for (IComponent component : node.getComponents()) {
+                component.accept(visitor);
+            }
+        }
     }
 
 }

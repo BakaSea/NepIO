@@ -1,9 +1,7 @@
 package net.infstudio.nepio;
 
 import net.infstudio.nepio.network.NetworkEventHandler;
-import net.infstudio.nepio.registry.NIOBlockEntities;
-import net.infstudio.nepio.registry.NIOBlocks;
-import net.infstudio.nepio.registry.NIOItems;
+import net.infstudio.nepio.registry.*;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.minecraft.item.ItemGroup;
@@ -24,6 +22,8 @@ public class NepIO implements ModInitializer {
         NIOItems.INSTANCE.onInitialize();
         NIOBlocks.INSTANCE.onInitialize();
         NIOBlockEntities.INSTANCE.onInitialize();
+        NIOScreenHandlers.INSTANCE.onInitialize();
+        NIONetworkHandlers.INSTANCE.onInitialize();
 
         NetworkEventHandler.INSTANCE.onInitialize();
     }

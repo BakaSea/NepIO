@@ -16,9 +16,9 @@ public class Wrench extends BaseItem {
     public ActionResult useOnBlock(ItemUsageContext context) {
         World world = context.getWorld();
         if (!world.isClient() && world.getBlockEntity(context.getBlockPos()) instanceof NIOBaseBlockEntity blockEntity) {
-            blockEntity.useWrench(context);
+            return blockEntity.useWrench(context);
         }
-        return ActionResult.PASS;
+        return ActionResult.SUCCESS;
     }
 
 }
