@@ -20,9 +20,4 @@ public class FilterUpgradeItem extends BaseItem implements IUpgradeItem {
         return new FilterUpgrade(size, blockEntity);
     }
 
-    @Override
-    public boolean hasScreen() {
-        return true;
-    }
-
 }

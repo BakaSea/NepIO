@@ -1,14 +1,14 @@
 package net.infstudio.nepio.network.api.upgrade;
 
-import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.infstudio.nepio.blockentity.api.BlockEntityInventory;
+import net.infstudio.nepio.blockentity.part.IUpgradeEntity;
+import net.infstudio.nepio.client.network.PacketUpgradeScreen;
 import net.infstudio.nepio.screen.FilterUpgradeScreenHandler;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.network.PacketByteBuf;
@@ -69,13 +69,12 @@ public class FilterUpgrade implements IUpgrade {
     }
 
     @Override
-    public ExtendedScreenHandlerFactory createExtendedScreenHandlerFactory(PacketByteBuf buffer, Inventory upgrades) {
+    public ExtendedScreenHandlerFactory createExtendedScreenHandlerFactory(PacketUpgradeScreen packet, IUpgradeEntity upgradeEntity, int index) {
         return new ExtendedScreenHandlerFactory() {
 
             @Override
             public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
-                Unpooled.copiedBuffer(buf, buffer);
-                buf.writeBoolean(whiteList);
+                packet.toPacket(buf);
             }
 
             @Override
@@ -85,7 +84,7 @@ public class FilterUpgrade implements IUpgrade {
 
             @Override
             public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
-                return new FilterUpgradeScreenHandler(syncId, inv, bank, upgrades);
+                return new FilterUpgradeScreenHandler(syncId, inv, bank, upgradeEntity, index);
             }
 
         };
@@ -94,6 +93,11 @@ public class FilterUpgrade implements IUpgrade {
     @Override
     public void markDirty() {
         blockEntity.markDirty();
+    }
+
+    @Override
+    public boolean hasScreen() {
+        return true;
     }
 
 }

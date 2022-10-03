@@ -1,43 +1,39 @@
 package net.infstudio.nepio.client.network;
 
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.infstudio.nepio.blockentity.NepCableEntity;
+import net.infstudio.nepio.blockentity.part.IUpgradeEntity;
+import net.infstudio.nepio.network.api.upgrade.IUpgrade;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.screen.NamedScreenHandlerFactory;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import org.apache.logging.log4j.util.TriConsumer;
 
-import java.util.function.Supplier;
-
-public abstract class PacketUpgradeScreen implements IPacket {
+public class PacketUpgradeScreen implements IPacket, IExecutableServer {
 
     private BlockPos pos;
     private Direction direction;
     private int index;
     private int upgradeSize;
-    private static final Supplier<PacketUpgradeScreen>[] types = new Supplier[]{
-        new PacketUpgrade(), new PacketFilter()
-    };
-
-    public PacketUpgradeScreen() {
-        pos = null;
-        direction = null;
-        index = 0;
-        upgradeSize = 0;
-    }
+    private NbtCompound nbt;
+    private PacketResult result;
 
     public PacketUpgradeScreen(PacketByteBuf buf) {
         fromPacket(buf);
     }
 
-    public PacketUpgradeScreen(BlockPos pos, Direction direction, int index, int upgradeSize) {
+    public PacketUpgradeScreen(BlockPos pos, Direction direction, int index, int upgradeSize, NbtCompound nbt, PacketResult result) {
         this.pos = pos;
         this.direction = direction;
         this.index = index;
         this.upgradeSize = upgradeSize;
-    }
-
-    public static PacketUpgradeScreen of(PacketByteBuf buf) {
-        PacketUpgradeScreen result = types[buf.readInt()].get();
-        result.fromPacket(buf);
-        return result;
+        this.nbt = nbt;
+        this.result = result;
     }
 
     @Override
@@ -50,6 +46,8 @@ public abstract class PacketUpgradeScreen implements IPacket {
         }
         index = buf.readInt();
         upgradeSize = buf.readInt();
+        nbt = buf.readNbt();
+        result = PacketResult.values()[buf.readInt()];
     }
 
     @Override
@@ -63,6 +61,8 @@ public abstract class PacketUpgradeScreen implements IPacket {
         }
         buf.writeInt(index);
         buf.writeInt(upgradeSize);
+        buf.writeNbt(nbt);
+        buf.writeInt(result.ordinal());
     }
 
     public BlockPos getPos() {
@@ -77,88 +77,64 @@ public abstract class PacketUpgradeScreen implements IPacket {
         return index;
     }
 
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
     public int getUpgradeSize() {
         return upgradeSize;
     }
 
-    public static class PacketUpgrade extends PacketUpgradeScreen implements Supplier<PacketUpgrade> {
-
-        public PacketUpgrade() {
-
-        }
-
-        public PacketUpgrade(PacketByteBuf buf) {
-            fromPacket(buf);
-        }
-
-        public PacketUpgrade(BlockPos pos, Direction direction, int index, int upgradeSize) {
-            super(pos, direction, index, upgradeSize);
-        }
-
-        @Override
-        public void fromPacket(PacketByteBuf buf) {
-            super.fromPacket(buf);
-        }
-
-        @Override
-        public void toPacket(PacketByteBuf buf) {
-            buf.writeInt(0);
-            super.toPacket(buf);
-        }
-
-        @Override
-        public void executeOnClient() {
-
-        }
-
-        @Override
-        public void executeOnServer() {
-
-        }
-
-        @Override
-        public PacketUpgrade get() {
-            return new PacketUpgrade();
-        }
-
+    public void setResult(PacketResult result) {
+        this.result = result;
     }
 
-    public static class PacketFilter extends PacketUpgradeScreen implements Supplier<PacketFilter> {
+    public NbtCompound getNbt() {
+        return nbt;
+    }
 
-        public PacketFilter() {
+    public void setNbt(NbtCompound nbt) {
+        this.nbt = nbt;
+    }
 
+    public PacketUpgradeScreen copy() {
+        PacketByteBuf buf = PacketByteBufs.create();
+        toPacket(buf);
+        return new PacketUpgradeScreen(buf);
+    }
+
+    @Override
+    public void executeOnServer(ServerPlayerEntity player) {
+        BlockEntity blockEntity = player.world.getBlockEntity(pos);
+        if (blockEntity instanceof NepCableEntity nepCable) {
+            if (nepCable.getPart(direction) instanceof IUpgradeEntity upgradeEntity) {
+                result.action.accept(upgradeEntity, player, this);
+            }
         }
+    }
 
-        public PacketFilter(PacketByteBuf buf) {
-            fromPacket(buf);
+    public enum PacketResult {
+        COMMON((entity, player, packet) -> {}),
+        CHANGE((entity, player, packet) -> {
+            int newIndex = packet.getNbt().getInt("index");
+            if (newIndex == 0) {
+                player.openHandledScreen((NamedScreenHandlerFactory) entity);
+            } else {
+                PacketUpgradeScreen newPacket = packet.copy();
+                newPacket.setIndex(newIndex);
+                newPacket.setResult(COMMON);
+                NbtCompound entityNbt = new NbtCompound();
+                entity.writeNbt(entityNbt);
+                newPacket.setNbt(entityNbt);
+                IUpgrade upgrade = entity.getUpgrade(newIndex-1);
+                player.openHandledScreen(upgrade.createExtendedScreenHandlerFactory(newPacket, entity, newIndex));
+            }
+        }),
+        FILTER((entity, player, packet) -> {});
+        TriConsumer<IUpgradeEntity, PlayerEntity, PacketUpgradeScreen> action;
+        PacketResult(TriConsumer<IUpgradeEntity, PlayerEntity, PacketUpgradeScreen> action) {
+            this.action = action;
         }
-
-        @Override
-        public void fromPacket(PacketByteBuf buf) {
-            super.fromPacket(buf);
-        }
-
-        @Override
-        public void toPacket(PacketByteBuf buf) {
-            buf.writeInt(1);
-            super.toPacket(buf);
-        }
-
-        @Override
-        public void executeOnClient() {
-
-        }
-
-        @Override
-        public void executeOnServer() {
-
-        }
-
-        @Override
-        public PacketFilter get() {
-            return new PacketFilter();
-        }
-
     }
 
 }

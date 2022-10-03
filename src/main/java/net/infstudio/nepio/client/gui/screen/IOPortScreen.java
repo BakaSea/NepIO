@@ -17,4 +17,9 @@ public class IOPortScreen extends AbstractUpgradeScreen<IOPortScreenHandler> {
         drawGuiSlot(matrices, handler.getUpgrades());
     }
 
+    @Override
+    protected void handledScreenTick() {
+        super.handledScreenTick();
+    }
+
 }

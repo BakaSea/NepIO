@@ -51,7 +51,7 @@ public abstract class IOPortEntity extends PartBaseEntity implements ExtendedScr
     @Nullable
     @Override
     public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
-        return new IOPortScreenHandler(syncId, inv, upgrades);
+        return new IOPortScreenHandler(syncId, inv, this, 0);
     }
 
     @Override
@@ -73,7 +73,9 @@ public abstract class IOPortEntity extends PartBaseEntity implements ExtendedScr
 
     @Override
     public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
-        PacketUpgradeScreen.PacketUpgrade packet = new PacketUpgradeScreen.PacketUpgrade(getPos(), direction, 0, upgrades.size());
+        NbtCompound nbt = new NbtCompound();
+        writeNbt(nbt);
+        PacketUpgradeScreen packet = new PacketUpgradeScreen(getPos(), direction, 0, upgrades.size(), nbt, PacketUpgradeScreen.PacketResult.COMMON);
         packet.toPacket(buf);
     }
 

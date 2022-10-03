@@ -1,13 +1,10 @@
 package net.infstudio.nepio.registry;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.infstudio.nepio.NepIO;
-import net.infstudio.nepio.blockentity.NepCableEntity;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
+import net.infstudio.nepio.client.network.IExecutableServer;
+import net.infstudio.nepio.client.network.PacketUpgradeScreen;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
@@ -19,13 +16,15 @@ public class NIONetworkHandlers implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        ServerPlayNetworking.registerGlobalReceiver(UPGRADE_SCREEN_PACKET, this::receiveUpgradeScreenPacket);
+        ServerPlayNetworking.registerGlobalReceiver(UPGRADE_SCREEN_PACKET,
+            ((server, player, handler, buf, responseSender) -> {
+                PacketUpgradeScreen packet = new PacketUpgradeScreen(buf);
+                server.execute(() -> executeOnServer(player, packet));
+            }));
     }
 
-    public void receiveUpgradeScreenPacket(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
-        if (player.world.getBlockEntity(buf.readBlockPos()) instanceof NepCableEntity nepCableEntity) {
-
-        }
+    public void executeOnServer(ServerPlayerEntity player, IExecutableServer executable) {
+        executable.executeOnServer(player);
     }
 
 }

@@ -8,8 +8,4 @@ public interface IPacket {
 
     void toPacket(PacketByteBuf buf);
 
-    void executeOnClient();
-
-    void executeOnServer();
-
 }

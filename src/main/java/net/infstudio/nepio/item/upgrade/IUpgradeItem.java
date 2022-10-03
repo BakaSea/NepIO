@@ -7,6 +7,4 @@ public interface IUpgradeItem {
 
     IUpgrade createUpgradeComponent(BlockEntity blockEntity);
 
-    boolean hasScreen();
-
 }
