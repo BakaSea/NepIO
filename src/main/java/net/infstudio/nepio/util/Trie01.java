@@ -3,6 +3,9 @@ package net.infstudio.nepio.util;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Used to find the MEX.
+ */
 public class Trie01 {
 
     private TrieNode root;

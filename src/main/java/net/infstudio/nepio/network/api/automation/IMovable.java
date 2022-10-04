@@ -5,6 +5,9 @@ import net.infstudio.nepio.network.api.IComponent;
 
 import java.util.function.Predicate;
 
+/**
+ * Use for item/fluid transportation
+ */
 public interface IMovable<T> extends IComponent {
 
     boolean isEnabled();

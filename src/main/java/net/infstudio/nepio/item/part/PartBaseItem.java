@@ -2,6 +2,7 @@ package net.infstudio.nepio.item.part;
 
 import com.mojang.logging.LogUtils;
 import net.infstudio.nepio.blockentity.NepCableEntity;
+import net.infstudio.nepio.blockentity.part.PartBaseEntity;
 import net.infstudio.nepio.item.BaseItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -16,6 +17,9 @@ import org.slf4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Use with {@link PartBaseEntity}
+ */
 public abstract class PartBaseItem extends BaseItem implements IPartItem {
 
     private static final Logger LOGGER = LogUtils.getLogger();

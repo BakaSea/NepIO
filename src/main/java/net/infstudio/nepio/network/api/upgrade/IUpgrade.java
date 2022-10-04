@@ -5,6 +5,9 @@ import net.infstudio.nepio.blockentity.part.IUpgradeEntity;
 import net.infstudio.nepio.client.network.PacketUpgradeScreen;
 import net.infstudio.nepio.network.api.IComponent;
 
+/**
+ * Use with {@link IUpgradeEntity} and {@link net.infstudio.nepio.item.upgrade.IUpgradeItem}.
+ */
 public interface IUpgrade extends IComponent {
 
     default ExtendedScreenHandlerFactory createExtendedScreenHandlerFactory(PacketUpgradeScreen packet, IUpgradeEntity upgradeEntity, int index) {

@@ -3,6 +3,7 @@ package net.infstudio.nepio.screen;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.infstudio.nepio.blockentity.NepCableEntity;
 import net.infstudio.nepio.blockentity.part.IUpgradeEntity;
+import net.infstudio.nepio.client.gui.screen.AbstractUpgradeScreen;
 import net.infstudio.nepio.client.network.PacketUpgradeScreen;
 import net.infstudio.nepio.network.api.upgrade.IUpgrade;
 import net.minecraft.block.entity.BlockEntity;
@@ -20,6 +21,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Use with {@link AbstractUpgradeScreen}.
+ */
 public abstract class AbstractUpgradeScreenHandler extends ScreenHandler {
 
     protected IUpgradeEntity upgradeEntity;
@@ -78,6 +82,9 @@ public abstract class AbstractUpgradeScreenHandler extends ScreenHandler {
         return upgradeEntity.getUpgrades();
     }
 
+    /**
+     * Call {@link AbstractUpgradeScreen#initTabs()} to call it.
+     */
     public void initTabs() {
         tabs.clear();
         tabs.add(new Pair<>(upgradeEntity.getItem(), 0));

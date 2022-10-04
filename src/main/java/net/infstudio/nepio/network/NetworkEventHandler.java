@@ -46,8 +46,11 @@ public class NetworkEventHandler implements ModInitializer {
     }
 
     private void onServerEndTick(MinecraftServer server) {
+        //1. Find networks.
         PathService.INSTANCE.pathFinding();
+        //2. Update nep cables connections.
         ConnectService.INSTANCE.connectUpdating();
+        //3. Do item/fluid transportation.
         TransferService.ITEM_INSTANCE.doTransfer();
     }
 

@@ -12,6 +12,9 @@ import org.slf4j.Logger;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Manage all the network.
+ */
 public class NetworkService {
 
     private static final Logger LOGGER = LogUtils.getLogger();

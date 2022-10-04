@@ -13,6 +13,9 @@ import org.slf4j.Logger;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
+/**
+ * Find all networks existed.
+ */
 public class PathService {
 
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -51,6 +54,9 @@ public class PathService {
         }
     }
 
+    /**
+     * Use BFS to find networks.
+     */
     public void pathFinding() {
         boolean flag = false;
         while (!queue.isEmpty()) {

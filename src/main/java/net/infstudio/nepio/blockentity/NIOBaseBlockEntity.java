@@ -23,6 +23,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Base block entity of Nep IO (Network block entity).
+ * Use with {@link net.infstudio.nepio.block.NIOBaseBlock}
+ */
 public abstract class NIOBaseBlockEntity extends BlockEntity implements INetworkEntity {
 
     protected NNetworkNode networkNode;

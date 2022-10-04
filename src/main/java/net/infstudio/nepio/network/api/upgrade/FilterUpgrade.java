@@ -12,7 +12,6 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -69,14 +68,16 @@ public class FilterUpgrade implements IUpgrade {
         IUpgrade.super.readNbt(nbt);
         size = nbt.getInt("size");
         if (size != bank.size()) bank = new BlockEntityInventory(size, blockEntity);
-        bank.readNbtList((NbtList) nbt.get("bank"));
+        bank.readNbt(nbt.getCompound("bank"));
         whiteList = nbt.getBoolean("whitelist");
     }
 
     @Override
     public void writeNbt(NbtCompound nbt) {
         IUpgrade.super.writeNbt(nbt);
-        nbt.put("bank", bank.toNbtList());
+        NbtCompound bankNbt = new NbtCompound();
+        bank.writeNbt(bankNbt);
+        nbt.put("bank", bankNbt);
         nbt.putInt("size", size);
         nbt.putBoolean("whitelist", whiteList);
     }

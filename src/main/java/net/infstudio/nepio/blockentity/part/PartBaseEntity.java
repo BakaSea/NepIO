@@ -14,6 +14,11 @@ import net.minecraft.world.World;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Part entity which is attached on the nep cable etc.
+ * Similar with {@link BlockEntity}.
+ * Use with {@link PartBaseItem}.
+ */
 public abstract class PartBaseEntity implements INetworkEntity {
 
     protected PartBaseItem item;
@@ -45,7 +50,7 @@ public abstract class PartBaseEntity implements INetworkEntity {
 
     @Override
     public void setNetworkNode(NNetworkNode networkNode) {
-
+        //Do nothing
     }
 
     @Override

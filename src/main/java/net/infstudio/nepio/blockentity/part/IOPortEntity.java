@@ -13,7 +13,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -58,14 +57,16 @@ public abstract class IOPortEntity extends PartBaseEntity implements ExtendedScr
     public void readNbt(NbtCompound nbt) {
         super.readNbt(nbt);
         upgrades.clear();
-        upgrades.readNbtList((NbtList) nbt.get("upgrade"));
+        upgrades.readNbt(nbt.getCompound("upgrade"));
         filterUpgrade.readNbt(nbt.getCompound("filter"));
     }
 
     @Override
     public void writeNbt(NbtCompound nbt) {
         super.writeNbt(nbt);
-        nbt.put("upgrade", upgrades.toNbtList());
+        NbtCompound upgradeNbt = new NbtCompound();
+        upgrades.writeNbt(upgradeNbt);
+        nbt.put("upgrade", upgradeNbt);
         NbtCompound filterNbt = new NbtCompound();
         filterUpgrade.writeNbt(filterNbt);
         nbt.put("filter", filterNbt);

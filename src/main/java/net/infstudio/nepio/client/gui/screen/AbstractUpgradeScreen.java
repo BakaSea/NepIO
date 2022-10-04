@@ -22,6 +22,9 @@ import net.minecraft.util.Identifier;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Use with {@link AbstractUpgradeScreenHandler}.
+ */
 public abstract class AbstractUpgradeScreen<T extends AbstractUpgradeScreenHandler> extends HandledScreen<T> {
 
     private static final Identifier TEXTURE = new Identifier(NepIO.MODID, "textures/gui/screen/upgrade_screen.png");

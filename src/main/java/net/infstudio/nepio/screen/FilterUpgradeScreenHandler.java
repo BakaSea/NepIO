@@ -4,12 +4,14 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.infstudio.nepio.blockentity.part.IUpgradeEntity;
 import net.infstudio.nepio.client.network.PacketUpgradeScreen;
 import net.infstudio.nepio.registry.NIOScreenHandlers;
+import net.infstudio.nepio.screen.slot.FilterSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.slot.Slot;
+import net.minecraft.screen.slot.SlotActionType;
 
 public class FilterUpgradeScreenHandler extends AbstractUpgradeScreenHandler {
 
@@ -29,7 +31,7 @@ public class FilterUpgradeScreenHandler extends AbstractUpgradeScreenHandler {
         super(NIOScreenHandlers.FILTER_UPGRADE_SCREEN_HANDLER, syncId, playerInventory, upgradeEntity, index);
         this.bank = bank;
         this.bank.onOpen(playerInventory.player);
-        addGuiSlot(bank, Slot::new);
+        addGuiSlot(bank, FilterSlot::new);
     }
 
     @Override
@@ -39,6 +41,20 @@ public class FilterUpgradeScreenHandler extends AbstractUpgradeScreenHandler {
 
     public Inventory getBank() {
         return bank;
+    }
+
+    @Override
+    public void onSlotClick(int slotIndex, int button, SlotActionType actionType, PlayerEntity player) {
+        if (slotIndex >= 0 && slotIndex < slots.size() && getSlot(slotIndex) instanceof FilterSlot slot) {
+            ItemStack stack = getCursorStack();
+            if (!slot.getStack().isEmpty() && stack.isEmpty()) {
+                slot.setStack(ItemStack.EMPTY);
+                slot.markDirty();
+            } else if (!stack.isEmpty()) {
+                slot.setStack(new ItemStack(stack.getItem()));
+                slot.markDirty();
+            }
+        } else super.onSlotClick(slotIndex, button, actionType, player);
     }
 
 }

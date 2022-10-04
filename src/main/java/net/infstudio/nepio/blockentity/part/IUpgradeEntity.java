@@ -5,6 +5,9 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
 
+/**
+ * Use with {@link IUpgrade} and {@link net.infstudio.nepio.item.upgrade.IUpgradeItem}.
+ */
 public interface IUpgradeEntity {
 
     Item getItem();

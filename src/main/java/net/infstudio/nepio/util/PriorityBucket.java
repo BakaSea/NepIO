@@ -3,6 +3,11 @@ package net.infstudio.nepio.util;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Sorted by priority buckets.
+ * Higher priority first.
+ * Values with same priority are stored in the same bucket.
+ */
 public class PriorityBucket<K, V> {
 
     private Map<K, List<V>> buckets;

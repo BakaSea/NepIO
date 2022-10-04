@@ -6,6 +6,9 @@ import net.minecraft.util.math.BlockPos;
 
 import java.util.List;
 
+/**
+ * Block entity which implements this is seen as the network entity.
+ */
 public interface INetworkEntity {
 
     BlockEntity getBlockEntity();

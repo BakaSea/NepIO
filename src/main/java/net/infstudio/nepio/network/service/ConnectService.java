@@ -10,6 +10,9 @@ import net.infstudio.nepio.blockentity.NepCableEntity;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Nep cable connection service.
+ */
 public class ConnectService {
 
     public static final ConnectService INSTANCE = new ConnectService();

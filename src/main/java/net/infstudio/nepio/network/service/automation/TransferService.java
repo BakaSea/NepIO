@@ -17,6 +17,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Item/Fluid transportation service.
+ */
 public class TransferService<T extends TransferVariant> {
 
     public static final TransferService<ItemVariant> ITEM_INSTANCE = new TransferService<>(ItemVariant.class);
