@@ -92,4 +92,23 @@ public abstract class IOPortEntity extends PartBaseEntity implements ExtendedScr
         }
     }
 
+    @Override
+    public void setUpgrade(int index, IUpgrade upgrade) {
+        switch (index) {
+            case 0: filterUpgrade.copyFrom(upgrade);
+        }
+    }
+
+    @Override
+    public void removeUpgrade(int index) {
+        switch (index) {
+            case 0: filterUpgrade.clean();
+        }
+    }
+
+    @Override
+    public void markDirty() {
+        blockEntity.markDirty();
+    }
+
 }

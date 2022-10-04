@@ -13,8 +13,14 @@ public interface IUpgradeEntity {
 
     IUpgrade getUpgrade(int index);
 
+    void setUpgrade(int index, IUpgrade upgrade);
+
+    void removeUpgrade(int index);
+
     void readNbt(NbtCompound nbt);
 
     void writeNbt(NbtCompound nbt);
+
+    void markDirty();
 
 }

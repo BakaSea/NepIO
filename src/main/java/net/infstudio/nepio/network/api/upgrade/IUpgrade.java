@@ -15,4 +15,8 @@ public interface IUpgrade extends IComponent {
 
     boolean hasScreen();
 
+    void copyFrom(IUpgrade other);
+
+    void clean();
+
 }

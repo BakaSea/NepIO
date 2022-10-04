@@ -65,7 +65,6 @@ public abstract class AbstractUpgradeScreen<T extends AbstractUpgradeScreenHandl
         for (int i = 0; i < tabs.size(); ++i) {
             int finalI = i;
             itemTabs.add(new ItemTab(x+i*28, y-30, button -> {
-                //close();
                 PacketUpgradeScreen packet = handler.getPacket().copy();
                 packet.setResult(PacketUpgradeScreen.PacketResult.CHANGE);
                 NbtCompound nbt = new NbtCompound();

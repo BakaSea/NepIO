@@ -9,6 +9,8 @@ import net.infstudio.nepio.screen.FilterUpgradeScreenHandler;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.network.PacketByteBuf;
@@ -23,6 +25,8 @@ public class FilterUpgrade implements IUpgrade {
     private boolean whiteList;
     private int size;
     private BlockEntity blockEntity;
+
+    public static final FilterUpgrade EMPTY = new FilterUpgrade(0, null);
 
     public FilterUpgrade(int size, BlockEntity blockEntity) {
         this.size = size;
@@ -48,7 +52,16 @@ public class FilterUpgrade implements IUpgrade {
     }
 
     public boolean match(ItemVariant itemVariant) {
-        return true;
+        boolean flag = false;
+        for (int i = 0; i < bank.size(); ++i) {
+            ItemStack stack = bank.getStack(i);
+            Item item = stack.getItem();
+            if (itemVariant.isOf(item)) {
+                flag = true;
+                break;
+            }
+        }
+        return whiteList == flag;
     }
 
     @Override
@@ -98,6 +111,22 @@ public class FilterUpgrade implements IUpgrade {
     @Override
     public boolean hasScreen() {
         return true;
+    }
+
+    @Override
+    public void copyFrom(IUpgrade other) {
+        if (other instanceof FilterUpgrade o) {
+            size = o.size;
+            whiteList = o.whiteList;
+            bank = o.bank;
+        }
+    }
+
+    @Override
+    public void clean() {
+        size = 0;
+        whiteList = true;
+        bank = new BlockEntityInventory(size, blockEntity);
     }
 
 }

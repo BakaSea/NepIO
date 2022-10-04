@@ -4,7 +4,6 @@ import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.infstudio.nepio.item.BaseItem;
 import net.infstudio.nepio.network.api.upgrade.FilterUpgrade;
 import net.infstudio.nepio.network.api.upgrade.IUpgrade;
-import net.minecraft.block.entity.BlockEntity;
 
 public class FilterUpgradeItem extends BaseItem implements IUpgradeItem {
 
@@ -16,8 +15,8 @@ public class FilterUpgradeItem extends BaseItem implements IUpgradeItem {
     }
 
     @Override
-    public IUpgrade createUpgradeComponent(BlockEntity blockEntity) {
-        return new FilterUpgrade(size, blockEntity);
+    public IUpgrade createUpgradeComponent() {
+        return new FilterUpgrade(size, null);
     }
 
 }

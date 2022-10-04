@@ -70,6 +70,10 @@ public abstract class AbstractUpgradeScreenHandler extends ScreenHandler {
         }
     }
 
+    public IUpgradeEntity getUpgradeEntity() {
+        return upgradeEntity;
+    }
+
     public Inventory getUpgrades() {
         return upgradeEntity.getUpgrades();
     }
