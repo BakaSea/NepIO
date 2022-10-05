@@ -10,14 +10,13 @@ import net.infstudio.nepio.network.service.PathService;
 import net.infstudio.nepio.registry.NIOBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.ItemEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
@@ -187,17 +186,15 @@ public class NepCableEntity extends NIOBaseBlockEntity {
         if (context.getPlayer().isSneaking()) {
             PartBaseEntity pointPart = getPart(hitPos);
             if (pointPart != null) {
-                world.spawnEntity(new ItemEntity(world, hitPos.x, hitPos.y, hitPos.z, new ItemStack(pointPart.getItem())));
+                ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(pointPart.getItem()));
+                pointPart.dropItems(world, pos);
                 removePart(pointPart.getDirection());
                 BlockState state = world.getBlockState(pos);
                 world.updateListeners(blockPos, state, state, Block.NOTIFY_LISTENERS);
                 return ActionResult.SUCCESS;
             }
             world.removeBlock(blockPos, false);
-            world.spawnEntity(new ItemEntity(world, hitPos.x, hitPos.y, hitPos.z, new ItemStack(blockItem)));
-            for (PartBaseEntity part : partMap.values()) {
-                world.spawnEntity(new ItemEntity(world, hitPos.x, hitPos.y, hitPos.z, new ItemStack(part.getItem())));
-            }
+            ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(blockItem));
             return ActionResult.SUCCESS;
         } else {
             BlockState state = world.getBlockState(blockPos);
@@ -254,6 +251,15 @@ public class NepCableEntity extends NIOBaseBlockEntity {
 
     public PartBaseEntity getPart(Direction direction) {
         return partMap.get(direction);
+    }
+
+    @Override
+    public void dropItems(World world, BlockPos pos) {
+        super.dropItems(world, pos);
+        for (PartBaseEntity part : partMap.values()) {
+            ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(part.getItem()));
+            part.dropItems(world, pos);
+        }
     }
 
 }

@@ -22,6 +22,7 @@ public class FilterUpgrade implements IUpgrade {
 
     private BlockEntityInventory bank;
     private boolean whiteList;
+    private boolean nbtEnabled;
     private int size;
     private BlockEntity blockEntity;
 
@@ -32,6 +33,7 @@ public class FilterUpgrade implements IUpgrade {
         this.blockEntity = blockEntity;
         this.bank = new BlockEntityInventory(size, blockEntity);
         this.whiteList = true;
+        this.nbtEnabled = false;
     }
 
     public int getSize() {
@@ -42,8 +44,24 @@ public class FilterUpgrade implements IUpgrade {
         this.whiteList = whiteList;
     }
 
+    public void changeWhiteList() {
+        setWhiteList(!isWhiteList());
+    }
+
     public boolean isWhiteList() {
         return whiteList;
+    }
+
+    public void setNbtEnabled(boolean nbtEnabled) {
+        this.nbtEnabled = nbtEnabled;
+    }
+
+    public void changeNbtEnabled() {
+        setNbtEnabled(!isNbtEnabled());
+    }
+
+    public boolean isNbtEnabled() {
+        return nbtEnabled;
     }
 
     public BlockEntityInventory getBank() {
@@ -56,8 +74,15 @@ public class FilterUpgrade implements IUpgrade {
             ItemStack stack = bank.getStack(i);
             Item item = stack.getItem();
             if (itemVariant.isOf(item)) {
-                flag = true;
-                break;
+                if (nbtEnabled) {
+                    if (itemVariant.nbtMatches(stack.getNbt())) {
+                        flag = true;
+                        break;
+                    }
+                } else {
+                    flag = true;
+                    break;
+                }
             }
         }
         return whiteList == flag;
@@ -70,6 +95,7 @@ public class FilterUpgrade implements IUpgrade {
         if (size != bank.size()) bank = new BlockEntityInventory(size, blockEntity);
         bank.readNbt(nbt.getCompound("bank"));
         whiteList = nbt.getBoolean("whitelist");
+        nbtEnabled = nbt.getBoolean("nbt");
     }
 
     @Override
@@ -80,6 +106,7 @@ public class FilterUpgrade implements IUpgrade {
         nbt.put("bank", bankNbt);
         nbt.putInt("size", size);
         nbt.putBoolean("whitelist", whiteList);
+        nbt.putBoolean("nbt", nbtEnabled);
     }
 
     @Override

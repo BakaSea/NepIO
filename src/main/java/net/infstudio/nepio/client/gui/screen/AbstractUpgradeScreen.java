@@ -105,4 +105,15 @@ public abstract class AbstractUpgradeScreen<T extends AbstractUpgradeScreenHandl
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
+    protected void syncUpgradeEntity() {
+        PacketUpgradeScreen packet = handler.getPacket().copy();
+        packet.setResult(PacketUpgradeScreen.PacketResult.SYNC);
+        NbtCompound nbt = new NbtCompound();
+        handler.getUpgradeEntity().writeNbt(nbt);
+        packet.setNbt(nbt);
+        PacketByteBuf buf = PacketByteBufs.create();
+        packet.toPacket(buf);
+        ClientPlayNetworking.send(NIONetworkHandlers.UPGRADE_SCREEN_PACKET, buf);
+    }
+
 }

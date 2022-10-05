@@ -84,4 +84,8 @@ public abstract class NIOBaseBlockEntity extends BlockEntity implements INetwork
         return ActionResult.PASS;
     }
 
+    public void dropItems(World world, BlockPos pos) {
+
+    }
+
 }

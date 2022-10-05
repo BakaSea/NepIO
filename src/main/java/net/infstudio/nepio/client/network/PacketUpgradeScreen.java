@@ -130,11 +130,10 @@ public class PacketUpgradeScreen implements IPacket, IExecutableServer {
                 player.openHandledScreen(upgrade.createExtendedScreenHandlerFactory(newPacket, entity, newIndex));
             }
         }),
-        UPGRADE((entity, player, packet) -> {
+        SYNC((entity, player, packet) -> {
             entity.readNbt(packet.getNbt());
             entity.markDirty();
-        }),
-        FILTER((entity, player, packet) -> {});
+        });
         TriConsumer<IUpgradeEntity, PlayerEntity, PacketUpgradeScreen> action;
         PacketResult(TriConsumer<IUpgradeEntity, PlayerEntity, PacketUpgradeScreen> action) {
             this.action = action;

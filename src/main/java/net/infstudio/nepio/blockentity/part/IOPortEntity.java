@@ -16,7 +16,10 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.ItemScatterer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class IOPortEntity extends PartBaseEntity implements ExtendedScreenHandlerFactory, IUpgradeEntity {
@@ -94,6 +97,12 @@ public abstract class IOPortEntity extends PartBaseEntity implements ExtendedScr
     }
 
     @Override
+    public <T extends IUpgrade> T getUpgrade(Class<T> upgrade) {
+        if (upgrade == FilterUpgrade.class) return (T) filterUpgrade;
+        return null;
+    }
+
+    @Override
     public void setUpgrade(int index, IUpgrade upgrade) {
         switch (index) {
             case 0: filterUpgrade.copyFrom(upgrade);
@@ -110,6 +119,12 @@ public abstract class IOPortEntity extends PartBaseEntity implements ExtendedScr
     @Override
     public void markDirty() {
         blockEntity.markDirty();
+    }
+
+    @Override
+    public void dropItems(World world, BlockPos pos) {
+        super.dropItems(world, pos);
+        ItemScatterer.spawn(world, pos, upgrades);
     }
 
 }

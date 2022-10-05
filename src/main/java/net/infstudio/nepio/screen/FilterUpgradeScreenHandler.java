@@ -5,6 +5,8 @@ import net.infstudio.nepio.blockentity.part.IUpgradeEntity;
 import net.infstudio.nepio.client.network.PacketUpgradeScreen;
 import net.infstudio.nepio.registry.NIOScreenHandlers;
 import net.infstudio.nepio.screen.slot.FilterSlot;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -12,6 +14,7 @@ import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.util.math.BlockPos;
 
 public class FilterUpgradeScreenHandler extends AbstractUpgradeScreenHandler {
 
@@ -49,10 +52,20 @@ public class FilterUpgradeScreenHandler extends AbstractUpgradeScreenHandler {
             ItemStack stack = getCursorStack();
             if (!slot.getStack().isEmpty() && stack.isEmpty()) {
                 slot.setStack(ItemStack.EMPTY);
-                slot.markDirty();
+                if (!player.world.isClient()) {
+                    BlockPos pos = getUpgradeEntity().getPos();
+                    BlockState state = player.world.getBlockState(pos);
+                    player.world.updateListeners(pos, state, state, Block.NOTIFY_LISTENERS);
+                }
             } else if (!stack.isEmpty()) {
-                slot.setStack(new ItemStack(stack.getItem()));
-                slot.markDirty();
+                ItemStack newStack = stack.copy();
+                newStack.setCount(1);
+                slot.setStack(newStack);
+                if (!player.world.isClient()) {
+                    BlockPos pos = getUpgradeEntity().getPos();
+                    BlockState state = player.world.getBlockState(pos);
+                    player.world.updateListeners(pos, state, state, Block.NOTIFY_LISTENERS);
+                }
             }
         } else super.onSlotClick(slotIndex, button, actionType, player);
     }

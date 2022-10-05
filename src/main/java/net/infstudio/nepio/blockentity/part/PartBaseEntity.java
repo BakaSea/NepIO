@@ -89,4 +89,8 @@ public abstract class PartBaseEntity implements INetworkEntity {
 
     }
 
+    public void dropItems(World world, BlockPos pos) {
+
+    }
+
 }
