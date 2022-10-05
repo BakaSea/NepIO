@@ -24,7 +24,7 @@ public class FilterUpgradeScreen extends AbstractUpgradeScreen<FilterUpgradeScre
     protected void init() {
         super.init();
         addDrawableChild(new ButtonWidget(x+7, y+50, 54, 18, null, button -> {
-            FilterUpgrade filterUpgrade = getFilterUpgrade();
+            FilterUpgrade filterUpgrade = handler.getFilterUpgrade();
             filterUpgrade.changeWhiteList();
             syncUpgradeEntity();
         }) {
@@ -32,12 +32,12 @@ public class FilterUpgradeScreen extends AbstractUpgradeScreen<FilterUpgradeScre
             private static final Text TEXT_OFF = new LiteralText("Black list");
             @Override
             public Text getMessage() {
-                FilterUpgrade filterUpgrade = getFilterUpgrade();
+                FilterUpgrade filterUpgrade = handler.getFilterUpgrade();
                 return filterUpgrade.isWhiteList() ? TEXT_ON : TEXT_OFF;
             }
         });
         addDrawableChild(new ButtonWidget(x+115, y+50, 54, 18, null, button -> {
-            FilterUpgrade filterUpgrade = getFilterUpgrade();
+            FilterUpgrade filterUpgrade = handler.getFilterUpgrade();
             filterUpgrade.changeNbtEnabled();
             syncUpgradeEntity();
         }) {
@@ -45,14 +45,10 @@ public class FilterUpgradeScreen extends AbstractUpgradeScreen<FilterUpgradeScre
             private static final Text TEXT_OFF = new LiteralText("Nbt off");
             @Override
             public Text getMessage() {
-                FilterUpgrade filterUpgrade = getFilterUpgrade();
+                FilterUpgrade filterUpgrade = handler.getFilterUpgrade();
                 return filterUpgrade.isNbtEnabled() ? TEXT_ON : TEXT_OFF;
             }
         });
-    }
-
-    private FilterUpgrade getFilterUpgrade() {
-        return handler.getUpgradeEntity().getUpgrade(FilterUpgrade.class);
     }
 
 }

@@ -35,7 +35,7 @@ public class OutputPortEntity extends IOPortEntity {
 
             @Override
             public int getPriority() {
-                return 0;
+                return priorityUpgrade.getPriority();
             }
 
             @Override

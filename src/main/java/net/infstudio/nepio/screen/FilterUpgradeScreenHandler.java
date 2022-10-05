@@ -3,6 +3,7 @@ package net.infstudio.nepio.screen;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.infstudio.nepio.blockentity.part.IUpgradeEntity;
 import net.infstudio.nepio.client.network.PacketUpgradeScreen;
+import net.infstudio.nepio.network.api.upgrade.FilterUpgrade;
 import net.infstudio.nepio.registry.NIOScreenHandlers;
 import net.infstudio.nepio.screen.slot.FilterSlot;
 import net.minecraft.block.Block;
@@ -68,6 +69,10 @@ public class FilterUpgradeScreenHandler extends AbstractUpgradeScreenHandler {
                 }
             }
         } else super.onSlotClick(slotIndex, button, actionType, player);
+    }
+
+    public FilterUpgrade getFilterUpgrade() {
+        return upgradeEntity.getUpgrade(FilterUpgrade.class);
     }
 
 }

@@ -6,5 +6,8 @@
   "item.nepio.filter_upgrade_basic": "Filter upgrade(Basic)",
   "item.nepio.filter_upgrade_advanced": "Filter upgrade(Advanced)",
   "item.nepio.filter_upgrade_ultimate": "Filter upgrade(Ultimate)",
-  "block.nepio.nep_cable": "Nep cable"
+  "item.nepio.priority_upgrade": "Priority upgrade",
+  "block.nepio.nep_cable": "Nep cable",
+  "gui.nepio.title.filter": "Filter",
+  "gui.nepio.title.priority": "Priority"
 }
