@@ -1,5 +1,7 @@
 package net.infstudio.nepio.network;
 
+import net.infstudio.nepio.network.service.HandlerService;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -7,6 +9,7 @@ public class NNetwork {
 
     private int id;
     private Set<NNetworkNode> nodes;
+
     public NNetwork(int id) {
         this.id = id;
         this.nodes = new HashSet<>();
@@ -26,20 +29,6 @@ public class NNetwork {
 
     public void removeNode(NNetworkNode node) {
         nodes.remove(node);
-    }
-
-    private static NNetwork mergeInPrior(NNetwork n1, NNetwork n2) {
-        for (NNetworkNode node : n2.nodes) {
-            node.setNetwork(n1);
-        }
-        n1.nodes.addAll(n2.nodes);
-        n2.nodes.clear();
-        return n1;
-    }
-
-    public static NNetwork merge(NNetwork n1, NNetwork n2) {
-        if (n1.nodes.size() >= n2.nodes.size()) return mergeInPrior(n1, n2);
-        else return mergeInPrior(n2, n1);
     }
 
     public void destroy() {

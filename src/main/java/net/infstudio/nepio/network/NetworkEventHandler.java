@@ -23,6 +23,9 @@ public class NetworkEventHandler implements ModInitializer {
         ServerTickEvents.END_SERVER_TICK.register(this::onServerEndTick);
         ServerLifecycleEvents.SERVER_STARTING.register(this::onServerStarting);
         ServerLifecycleEvents.SERVER_STOPPED.register(this::onServerStopped);
+
+        NetworkService.INSTANCE.registerHandlerService(TransferService.ITEM_INSTANCE);
+        NetworkService.INSTANCE.registerHandlerService(TransferService.FLUID_INSTANCE);
     }
 
     private void onServerStarting(MinecraftServer server) {
@@ -51,7 +54,8 @@ public class NetworkEventHandler implements ModInitializer {
         //2. Update nep cables connections.
         ConnectService.INSTANCE.connectUpdating();
         //3. Do item/fluid transportation.
-        TransferService.ITEM_INSTANCE.doTransfer();
+        //TransferService.ITEM_INSTANCE.doTransfer();
+        NetworkService.INSTANCE.tick();
     }
 
 }

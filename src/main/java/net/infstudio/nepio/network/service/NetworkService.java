@@ -4,12 +4,12 @@ import com.mojang.logging.LogUtils;
 import net.infstudio.nepio.blockentity.NIOBaseBlockEntity;
 import net.infstudio.nepio.network.NNetwork;
 import net.infstudio.nepio.network.NNetworkNode;
-import net.infstudio.nepio.network.api.ComponentVisitor;
-import net.infstudio.nepio.network.api.IComponent;
 import net.infstudio.nepio.util.Trie01;
 import org.slf4j.Logger;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -22,15 +22,19 @@ public class NetworkService {
     private Trie01 networkID, nodeID;
     private Set<NNetwork> networks;
 
+    private final List<HandlerService<?>> services = new ArrayList<>();
+
     public static final NetworkService INSTANCE = new NetworkService();
 
     public void onServerStarting() {
         networkID = new Trie01();
         nodeID = new Trie01();
         networks = new HashSet<>();
+        services.forEach(HandlerService::onServerStarting);
     }
 
     public void onServerStopped() {
+        services.forEach(HandlerService::onServerStopped);
         networkID.clear();
         nodeID.clear();
         networks.clear();
@@ -39,6 +43,7 @@ public class NetworkService {
     public NNetwork createNetwork() {
         NNetwork network = new NNetwork(networkID.mexAndInsert());
         networks.add(network);
+        services.forEach(service -> service.createNetwork(network));
         LOGGER.info("Create network#{}", network.getId());
         return network;
     }
@@ -52,6 +57,7 @@ public class NetworkService {
 
     public void removeNetwork(NNetwork network) {
         LOGGER.info("Remove network#{}", network.getId());
+        services.forEach(service -> service.removeNetwork(network));
         networkID.remove(network.getId());
         networks.remove(network);
         network.destroy();
@@ -66,9 +72,11 @@ public class NetworkService {
     public void addNodeToNetwork(NNetworkNode node, NNetwork network) {
         network.addNode(node);
         node.setNetwork(network);
+        services.forEach(service -> service.addNodeToNetwork(node, network));
     }
 
     public void removeNodeInNetwork(NNetworkNode node, NNetwork network) {
+        services.forEach(service -> service.removeNodeInNetwork(node, network));
         network.removeNode(node);
         node.setNetwork(null);
     }
@@ -77,17 +85,35 @@ public class NetworkService {
         return networks;
     }
 
-    public void mergeNetwork(NNetwork n1, NNetwork n2) {
-        NNetwork n3 = NNetwork.merge(n1, n2);
-        if (n3 == n1) removeNetwork(n2);
-        else removeNetwork(n1);
+    private void mergeInPrior(NNetwork n1, NNetwork n2) {
+        for (NNetworkNode node : n2.getNodes()) {
+            node.setNetwork(n1);
+            services.forEach(service -> {
+                service.removeNodeInNetwork(node, n2);
+                service.addNodeToNetwork(node, n1);
+            });
+        }
+        n1.getNodes().addAll(n2.getNodes());
+        n2.getNodes().clear();
     }
 
-    public static <T> void visitNetwork(NNetwork network, ComponentVisitor<T> visitor) {
-        for (NNetworkNode node : network.getNodes()) {
-            for (IComponent component : node.getComponents()) {
-                component.accept(visitor);
-            }
+    public void mergeNetwork(NNetwork n1, NNetwork n2) {
+        if (n1.getNodes().size() >= n2.getNodes().size()) {
+            mergeInPrior(n1, n2);
+            removeNetwork(n2);
+        } else {
+            mergeInPrior(n2, n1);
+            removeNetwork(n1);
+        }
+    }
+
+    public void registerHandlerService(HandlerService<?> service) {
+        services.add(service);
+    }
+
+    public void tick() {
+        for (HandlerService<?> service : services) {
+            service.tick();
         }
     }
 

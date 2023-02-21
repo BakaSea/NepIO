@@ -6,45 +6,46 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.infstudio.nepio.network.NNetwork;
-import net.infstudio.nepio.network.api.ComponentVisitor;
+import net.infstudio.nepio.network.api.IComponent;
 import net.infstudio.nepio.network.api.automation.*;
-import net.infstudio.nepio.network.service.NetworkService;
+import net.infstudio.nepio.network.service.HandlerService;
 import net.infstudio.nepio.util.PriorityBucket;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * Item/Fluid transportation service.
  */
-public class TransferService<T extends TransferVariant> {
+public class TransferService<T extends TransferVariant> extends HandlerService<TransferService<T>.TransferPayload> {
 
     public static final TransferService<ItemVariant> ITEM_INSTANCE = new TransferService<>(ItemVariant.class);
     public static final TransferService<FluidVariant> FLUID_INSTANCE = new TransferService<>(FluidVariant.class);
 
-    private Class<T> clazz;
+    private final Class<T> clazz;
 
     public TransferService(Class<T> clazz) {
         this.clazz = clazz;
     }
 
-    public void doTransfer() {
-        for (NNetwork network : NetworkService.INSTANCE.getNetworks()) {
+    public void tick() {
+        for (NNetwork network : payloads.keySet()) {
             doTransfer(network);
         }
     }
 
     private void doTransfer(NNetwork network) {
-        TransferVisitor<T> visitor = new TransferVisitor<>(clazz);
-        NetworkService.visitNetwork(network, visitor);
-        List<IInsertable<T>> insertableList = visitor.getInsertableList();
-        List<IExtractable<T>> extractableList = visitor.getExtractableList();
+        TransferPayload payload = payloads.get(network);
+        if (payload.tick < 20) {
+            payload.tick++;
+            return;
+        }
+        payload.tick = 0;
 
-        insertableList = insertableList.stream().filter(insertable -> insertable.isEnabled() && insertable.getStorage() != null).collect(Collectors.toList());
-        extractableList = extractableList.stream().filter(extractable -> extractable.isEnabled() && extractable.getStorage() != null).collect(Collectors.toList());
+        var insertableList =
+                payload.insertableList.stream().filter(insertable -> insertable.isEnabled() && insertable.getStorage() != null).collect(Collectors.toList());
+        var extractableList =
+                payload.extractableList.stream().filter(extractable -> extractable.isEnabled() && extractable.getStorage() != null).collect(Collectors.toList());
 
         PriorityBucket<Integer, IInsertable<T>> insertableBucket =
                 new PriorityBucket<>(insertableList, Comparator.reverseOrder(), Comparator.comparing(IInsertable::getPriority), IMovable::getPriority);
@@ -76,38 +77,49 @@ public class TransferService<T extends TransferVariant> {
 
     }
 
-    private class TransferVisitor<T> implements ComponentVisitor<Void> {
+    @Override
+    protected TransferPayload createPayload() {
+        return new TransferPayload();
+    }
 
-        private List<IInsertable<T>> insertableList;
-        private List<IExtractable<T>> extractableList;
-        private Class<T> clazz;
+    protected class TransferPayload extends NetworkPayload {
 
-        public TransferVisitor(Class<T> clazz) {
-            this.clazz = clazz;
-            this.insertableList = new ArrayList<>();
-            this.extractableList = new ArrayList<>();
+        public Set<IInsertable<T>> insertableList;
+        public Set<IExtractable<T>> extractableList;
+
+        public TransferPayload() {
+            insertableList = new HashSet<>();
+            extractableList = new HashSet<>();
         }
 
         @Override
-        public Void visit(IInsertable<?> insertable) {
-            if (insertable.get() == clazz) insertableList.add((IInsertable<T>) insertable);
-            return ComponentVisitor.super.visit(insertable);
+        public void addComponent(IComponent component) {
+            if (component instanceof IInsertable insertable) {
+                if (insertable.get() == clazz) {
+                    insertableList.add(insertable);
+                }
+            } else if (component instanceof IExtractable extractable) {
+                if (extractable.get() == clazz) {
+                    extractableList.add(extractable);
+                }
+            }
         }
 
         @Override
-        public Void visit(IExtractable<?> extractable) {
-            if (extractable.get() == clazz) extractableList.add((IExtractable<T>) extractable);
-            return ComponentVisitor.super.visit(extractable);
-        }
-
-        public List<IInsertable<T>> getInsertableList() {
-            return insertableList;
-        }
-
-        public List<IExtractable<T>> getExtractableList() {
-            return extractableList;
+        public void removeComponent(IComponent component) {
+            if (component instanceof IInsertable insertable) {
+                if (insertable.get() == clazz) {
+                    insertableList.remove(insertable);
+                }
+            } else if (component instanceof IExtractable extractable) {
+                if (extractable.get() == clazz) {
+                    extractableList.remove(extractable);
+                }
+            }
         }
 
     }
 
 }
+
+
