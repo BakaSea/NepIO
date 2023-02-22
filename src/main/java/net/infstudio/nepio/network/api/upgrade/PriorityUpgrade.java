@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class PriorityUpgrade implements IUpgrade {
 
-    int priority;
+    private int priority;
     private BlockEntity blockEntity;
 
     public PriorityUpgrade(BlockEntity blockEntity) {

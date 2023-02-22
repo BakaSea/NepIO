@@ -8,13 +8,19 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
+import org.jetbrains.annotations.Nullable;
 
 public class IOPortScreenHandler extends AbstractUpgradeScreenHandler {
 
     public IOPortScreenHandler(int syncId, PlayerInventory playerInventory, PacketByteBuf buf) {
         this(syncId, playerInventory, getUpgradeEntity(playerInventory.player, buf), getIndex(buf));
         packetUpgradeScreen = new PacketUpgradeScreen(buf);
+    }
+
+    public IOPortScreenHandler(@Nullable ScreenHandlerType<?> type, int syncId, PlayerInventory playerInventory, IUpgradeEntity upgradeEntity, int index) {
+        super(type, syncId, playerInventory, upgradeEntity, index);
     }
 
     public IOPortScreenHandler(int syncId, PlayerInventory playerInventory, IUpgradeEntity upgradeEntity, int index) {

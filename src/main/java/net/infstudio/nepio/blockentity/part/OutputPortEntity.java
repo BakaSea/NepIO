@@ -39,6 +39,11 @@ public class OutputPortEntity extends IOPortEntity {
             }
 
             @Override
+            public int getSpeed() {
+                return speedUpgrade.getSpeed();
+            }
+
+            @Override
             public Predicate<ItemVariant> getFilter() {
                 return itemVariant -> {
                     if (filterUpgrade.getSize() > 0) return filterUpgrade.match(itemVariant);

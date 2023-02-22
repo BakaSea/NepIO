@@ -7,10 +7,18 @@ import net.infstudio.nepio.blockentity.NIOBaseBlockEntity;
 import net.infstudio.nepio.item.part.PartBaseItem;
 import net.infstudio.nepio.network.api.IComponent;
 import net.infstudio.nepio.network.api.automation.IInsertable;
+import net.infstudio.nepio.network.api.upgrade.DistributionUpgrade;
+import net.infstudio.nepio.network.api.upgrade.IUpgrade;
 import net.infstudio.nepio.registry.NIOItems;
+import net.infstudio.nepio.screen.InputPortScreenHandler;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.Direction;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -18,14 +26,21 @@ import java.util.function.Predicate;
 public class InputPortEntity extends IOPortEntity {
 
     private IInsertable<ItemVariant> insertable;
+    private DistributionUpgrade distributionUpgrade;
 
     public InputPortEntity(NIOBaseBlockEntity blockEntity, Direction direction) {
         super((PartBaseItem) NIOItems.INPUT_PORT.get(), blockEntity, direction);
-        insertable = buildInsertable();
+        this.distributionUpgrade = new DistributionUpgrade(blockEntity);
+        this.insertable = buildInsertable();
     }
 
     private IInsertable<ItemVariant> buildInsertable() {
         return new IInsertable<>() {
+
+            @Override
+            public Mode getMode() {
+                return distributionUpgrade.getMode();
+            }
 
             @Override
             public boolean isEnabled() {
@@ -35,6 +50,11 @@ public class InputPortEntity extends IOPortEntity {
             @Override
             public int getPriority() {
                 return priorityUpgrade.getPriority();
+            }
+
+            @Override
+            public int getSpeed() {
+                return speedUpgrade.getSpeed();
             }
 
             @Override
@@ -64,8 +84,33 @@ public class InputPortEntity extends IOPortEntity {
     }
 
     @Override
+    public <T extends IUpgrade> T getUpgrade(Class<T> upgrade) {
+        if (upgrade == DistributionUpgrade.class) return (T) distributionUpgrade;
+        return super.getUpgrade(upgrade);
+    }
+
+    @Override
     public Text getDisplayName() {
         return new TranslatableText(NIOItems.INPUT_PORT.get().getTranslationKey());
+    }
+
+    @Override
+    public @Nullable ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
+        return new InputPortScreenHandler(syncId, inv, this, 0);
+    }
+
+    @Override
+    public void readNbt(NbtCompound nbt) {
+        super.readNbt(nbt);
+        distributionUpgrade.readNbt(nbt.getCompound("distribution"));
+    }
+
+    @Override
+    public void writeNbt(NbtCompound nbt) {
+        super.writeNbt(nbt);
+        NbtCompound distributionNbt = new NbtCompound();
+        distributionUpgrade.writeNbt(distributionNbt);
+        nbt.put("distribution", distributionNbt);
     }
 
 }

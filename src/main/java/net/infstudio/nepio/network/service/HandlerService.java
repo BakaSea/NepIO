@@ -7,6 +7,10 @@ import net.infstudio.nepio.network.api.IComponent;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Services which use the whole network information should extend it.
+ * @param <P> Custom payload which extends {@link NetworkPayload}.
+ */
 public abstract class HandlerService<P extends HandlerService.NetworkPayload> {
 
     protected Map<NNetwork, P> payloads;

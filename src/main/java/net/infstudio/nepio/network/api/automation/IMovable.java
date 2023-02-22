@@ -14,6 +14,8 @@ public interface IMovable<T> extends IComponent {
 
     int getPriority();
 
+    int getSpeed();
+
     Predicate<T> getFilter();
 
     Storage<T> getStorage();

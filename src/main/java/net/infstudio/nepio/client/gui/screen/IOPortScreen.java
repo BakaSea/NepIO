@@ -9,11 +9,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 
-public class IOPortScreen extends AbstractUpgradeScreen<IOPortScreenHandler> {
+public class IOPortScreen<T extends IOPortScreenHandler> extends AbstractUpgradeScreen<T> {
 
     private Item[] preUpgrades;
 
-    public IOPortScreen(IOPortScreenHandler handler, PlayerInventory inventory, Text title) {
+    public IOPortScreen(T handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
         Inventory upgrades = handler.getUpgrades();
         preUpgrades = new Item[upgrades.size()];

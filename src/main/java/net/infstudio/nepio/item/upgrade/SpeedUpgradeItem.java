@@ -2,21 +2,21 @@ package net.infstudio.nepio.item.upgrade;
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.infstudio.nepio.item.BaseItem;
-import net.infstudio.nepio.network.api.upgrade.FilterUpgrade;
 import net.infstudio.nepio.network.api.upgrade.IUpgrade;
+import net.infstudio.nepio.network.api.upgrade.SpeedUpgrade;
 
-public class FilterUpgradeItem extends BaseItem implements IUpgradeItem {
+public class SpeedUpgradeItem extends BaseItem implements IUpgradeItem {
 
-    private int size;
+    private int level;
 
-    public FilterUpgradeItem(int size) {
+    public SpeedUpgradeItem(int level) {
         super(new FabricItemSettings());
-        this.size = size;
+        this.level = level;
     }
 
     @Override
     public IUpgrade createUpgradeComponent() {
-        return new FilterUpgrade(size, null);
+        return new SpeedUpgrade(level, null);
     }
 
 }

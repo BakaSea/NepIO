@@ -6,6 +6,7 @@ import net.infstudio.nepio.blockentity.api.BlockEntityInventory;
 import net.infstudio.nepio.client.network.PacketUpgradeScreen;
 import net.infstudio.nepio.network.api.upgrade.IUpgrade;
 import net.infstudio.nepio.network.api.upgrade.PriorityUpgrade;
+import net.infstudio.nepio.network.api.upgrade.SpeedUpgrade;
 import net.infstudio.nepio.registry.NIOItems;
 import net.infstudio.nepio.screen.IOPortScreenHandler;
 import net.infstudio.nepio.item.part.PartBaseItem;
@@ -39,6 +40,9 @@ public abstract class IOPortEntity extends PartBaseEntity implements ExtendedScr
                         || stack.isOf(NIOItems.FILTER_UPGRADE_ADVANCED.get())
                         || stack.isOf(NIOItems.FILTER_UPGRADE_ULTIMATE.get());
                 case 1: return stack.isOf(NIOItems.PRIORITY_UPGRADE.get());
+                case 2: return stack.isOf(NIOItems.SPEED_UPGRADE_BASIC.get())
+                        || stack.isOf(NIOItems.SPEED_UPGRADE_ADVANCED.get())
+                        || stack.isOf(NIOItems.SPEED_UPGRADE_ULTIMATE.get());
                 default: return false;
             }
         }
@@ -47,11 +51,13 @@ public abstract class IOPortEntity extends PartBaseEntity implements ExtendedScr
 
     protected FilterUpgrade filterUpgrade;
     protected PriorityUpgrade priorityUpgrade;
+    protected SpeedUpgrade speedUpgrade;
 
     public IOPortEntity(PartBaseItem item, NIOBaseBlockEntity blockEntity, Direction direction) {
         super(item, blockEntity, direction);
         filterUpgrade = new FilterUpgrade(0, blockEntity);
         priorityUpgrade = new PriorityUpgrade(blockEntity);
+        speedUpgrade = new SpeedUpgrade(0, blockEntity);
     }
 
     @Nullable
@@ -67,6 +73,7 @@ public abstract class IOPortEntity extends PartBaseEntity implements ExtendedScr
         upgrades.readNbt(nbt.getCompound("upgrade"));
         filterUpgrade.readNbt(nbt.getCompound("filter"));
         priorityUpgrade.readNbt(nbt.getCompound("priority"));
+        speedUpgrade.readNbt(nbt.getCompound("speed"));
     }
 
     @Override
@@ -81,6 +88,9 @@ public abstract class IOPortEntity extends PartBaseEntity implements ExtendedScr
         NbtCompound priorityNbt = new NbtCompound();
         priorityUpgrade.writeNbt(priorityNbt);
         nbt.put("priority", priorityNbt);
+        NbtCompound speedNbt = new NbtCompound();
+        speedUpgrade.writeNbt(speedNbt);
+        nbt.put("speed", speedNbt);
     }
 
     @Override
@@ -101,6 +111,7 @@ public abstract class IOPortEntity extends PartBaseEntity implements ExtendedScr
         switch (index) {
             case 0: return filterUpgrade;
             case 1: return priorityUpgrade;
+            case 2: return speedUpgrade;
             default: return null;
         }
     }
@@ -109,6 +120,7 @@ public abstract class IOPortEntity extends PartBaseEntity implements ExtendedScr
     public <T extends IUpgrade> T getUpgrade(Class<T> upgrade) {
         if (upgrade == FilterUpgrade.class) return (T) filterUpgrade;
         if (upgrade == PriorityUpgrade.class) return (T) priorityUpgrade;
+        if (upgrade == SpeedUpgrade.class) return (T) speedUpgrade;
         return null;
     }
 
@@ -117,6 +129,7 @@ public abstract class IOPortEntity extends PartBaseEntity implements ExtendedScr
         switch (index) {
             case 0: filterUpgrade.copyFrom(upgrade);
             case 1: priorityUpgrade.copyFrom(upgrade);
+            case 2: speedUpgrade.copyFrom(upgrade);
         }
     }
 
@@ -125,6 +138,7 @@ public abstract class IOPortEntity extends PartBaseEntity implements ExtendedScr
         switch (index) {
             case 0: filterUpgrade.clean();
             case 1: priorityUpgrade.clean();
+            case 2: speedUpgrade.clean();
         }
     }
 
