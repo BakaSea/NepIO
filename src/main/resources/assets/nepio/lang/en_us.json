@@ -7,7 +7,17 @@
   "item.nepio.filter_upgrade_advanced": "Filter upgrade(Advanced)",
   "item.nepio.filter_upgrade_ultimate": "Filter upgrade(Ultimate)",
   "item.nepio.priority_upgrade": "Priority upgrade",
+  "item.nepio.speed_upgrade_1": "Speed upgrade(1)",
+  "item.nepio.speed_upgrade_2": "Speed upgrade(2)",
+  "item.nepio.speed_upgrade_3": "Speed upgrade(3)",
+  "item.nepio.speed_upgrade_4": "Speed upgrade(4)",
+  "item.nepio.speed_upgrade_5": "Speed upgrade(5)",
+  "item.nepio.redstone_upgrade": "Redstone upgrade",
   "block.nepio.nep_cable": "Nep cable",
   "gui.nepio.title.filter": "Filter",
-  "gui.nepio.title.priority": "Priority"
+  "gui.nepio.title.priority": "Priority",
+  "gui.nepio.title.redstone": "Redstone",
+  "gui.nepio.redstone.on": "Enabled when redstone on",
+  "gui.nepio.redstone.off": "Enabled when redstone off",
+  "gui.nepio.redstone.ignore": "Ignore redstone"
 }

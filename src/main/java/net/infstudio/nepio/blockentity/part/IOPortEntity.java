@@ -4,13 +4,10 @@ import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.infstudio.nepio.blockentity.NIOBaseBlockEntity;
 import net.infstudio.nepio.blockentity.api.BlockEntityInventory;
 import net.infstudio.nepio.client.network.PacketUpgradeScreen;
-import net.infstudio.nepio.network.api.upgrade.IUpgrade;
-import net.infstudio.nepio.network.api.upgrade.PriorityUpgrade;
-import net.infstudio.nepio.network.api.upgrade.SpeedUpgrade;
+import net.infstudio.nepio.network.api.upgrade.*;
 import net.infstudio.nepio.registry.NIOItems;
 import net.infstudio.nepio.screen.IOPortScreenHandler;
 import net.infstudio.nepio.item.part.PartBaseItem;
-import net.infstudio.nepio.network.api.upgrade.FilterUpgrade;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -40,9 +37,12 @@ public abstract class IOPortEntity extends PartBaseEntity implements ExtendedScr
                         || stack.isOf(NIOItems.FILTER_UPGRADE_ADVANCED.get())
                         || stack.isOf(NIOItems.FILTER_UPGRADE_ULTIMATE.get());
                 case 1: return stack.isOf(NIOItems.PRIORITY_UPGRADE.get());
-                case 2: return stack.isOf(NIOItems.SPEED_UPGRADE_BASIC.get())
-                        || stack.isOf(NIOItems.SPEED_UPGRADE_ADVANCED.get())
-                        || stack.isOf(NIOItems.SPEED_UPGRADE_ULTIMATE.get());
+                case 2: return stack.isOf(NIOItems.SPEED_UPGRADE_1.get())
+                        || stack.isOf(NIOItems.SPEED_UPGRADE_2.get())
+                        || stack.isOf(NIOItems.SPEED_UPGRADE_3.get())
+                        || stack.isOf(NIOItems.SPEED_UPGRADE_4.get())
+                        || stack.isOf(NIOItems.SPEED_UPGRADE_5.get());
+                case 3: return stack.isOf(NIOItems.REDSTONE_UPGRADE.get());
                 default: return false;
             }
         }
@@ -52,12 +52,14 @@ public abstract class IOPortEntity extends PartBaseEntity implements ExtendedScr
     protected FilterUpgrade filterUpgrade;
     protected PriorityUpgrade priorityUpgrade;
     protected SpeedUpgrade speedUpgrade;
+    protected RedstoneUpgrade redstoneUpgrade;
 
     public IOPortEntity(PartBaseItem item, NIOBaseBlockEntity blockEntity, Direction direction) {
         super(item, blockEntity, direction);
         filterUpgrade = new FilterUpgrade(0, blockEntity);
         priorityUpgrade = new PriorityUpgrade(blockEntity);
         speedUpgrade = new SpeedUpgrade(0, blockEntity);
+        redstoneUpgrade = new RedstoneUpgrade(blockEntity);
     }
 
     @Nullable
@@ -74,6 +76,7 @@ public abstract class IOPortEntity extends PartBaseEntity implements ExtendedScr
         filterUpgrade.readNbt(nbt.getCompound("filter"));
         priorityUpgrade.readNbt(nbt.getCompound("priority"));
         speedUpgrade.readNbt(nbt.getCompound("speed"));
+        redstoneUpgrade.readNbt(nbt.getCompound("redstone"));
     }
 
     @Override
@@ -91,6 +94,9 @@ public abstract class IOPortEntity extends PartBaseEntity implements ExtendedScr
         NbtCompound speedNbt = new NbtCompound();
         speedUpgrade.writeNbt(speedNbt);
         nbt.put("speed", speedNbt);
+        NbtCompound redstoneNbt = new NbtCompound();
+        redstoneUpgrade.writeNbt(redstoneNbt);
+        nbt.put("redstone", redstoneNbt);
     }
 
     @Override
@@ -112,6 +118,7 @@ public abstract class IOPortEntity extends PartBaseEntity implements ExtendedScr
             case 0: return filterUpgrade;
             case 1: return priorityUpgrade;
             case 2: return speedUpgrade;
+            case 3: return redstoneUpgrade;
             default: return null;
         }
     }
@@ -121,6 +128,7 @@ public abstract class IOPortEntity extends PartBaseEntity implements ExtendedScr
         if (upgrade == FilterUpgrade.class) return (T) filterUpgrade;
         if (upgrade == PriorityUpgrade.class) return (T) priorityUpgrade;
         if (upgrade == SpeedUpgrade.class) return (T) speedUpgrade;
+        if (upgrade == RedstoneUpgrade.class) return (T) redstoneUpgrade;
         return null;
     }
 
@@ -130,6 +138,7 @@ public abstract class IOPortEntity extends PartBaseEntity implements ExtendedScr
             case 0: filterUpgrade.copyFrom(upgrade);
             case 1: priorityUpgrade.copyFrom(upgrade);
             case 2: speedUpgrade.copyFrom(upgrade);
+            case 3: redstoneUpgrade.copyFrom(upgrade);
         }
     }
 
@@ -139,6 +148,7 @@ public abstract class IOPortEntity extends PartBaseEntity implements ExtendedScr
             case 0: filterUpgrade.clean();
             case 1: priorityUpgrade.clean();
             case 2: speedUpgrade.clean();
+            case 3: redstoneUpgrade.clean();
         }
     }
 

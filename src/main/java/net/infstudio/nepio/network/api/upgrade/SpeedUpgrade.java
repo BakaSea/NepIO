@@ -14,12 +14,7 @@ public class SpeedUpgrade implements IUpgrade {
     }
 
     public int getSpeed() {
-        switch (level) {
-            case 1: return 2;
-            case 2: return 64;
-            case 3: return 512;
-        }
-        return 1;
+        return 1 << (level << 1);
     }
 
     @Override

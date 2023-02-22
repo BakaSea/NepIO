@@ -22,7 +22,7 @@ public class InputPortScreen extends IOPortScreen<InputPortScreenHandler> {
             DistributionUpgrade distributionUpgrade = handler.getDistributionUpgrade();
             distributionUpgrade.setMode(IInsertable.Mode.values()[(distributionUpgrade.getMode().ordinal()+1)%IInsertable.Mode.values().length]);
             syncUpgradeEntity();
-        }){
+        }) {
             @Override
             public Text getMessage() {
                 return new LiteralText(handler.getDistributionUpgrade().getMode().name());

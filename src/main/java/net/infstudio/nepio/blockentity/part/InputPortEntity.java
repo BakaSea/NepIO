@@ -44,7 +44,7 @@ public class InputPortEntity extends IOPortEntity {
 
             @Override
             public boolean isEnabled() {
-                return true;
+                return redstoneUpgrade.isEnabled();
             }
 
             @Override

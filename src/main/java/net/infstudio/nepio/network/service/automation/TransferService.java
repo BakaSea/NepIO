@@ -62,7 +62,7 @@ public class TransferService<T extends TransferVariant> extends HandlerService<T
                     extractableList = extractableBucket.getBucketContent(extractPriority);
                     long total = 0;
                     switch (insertable.getMode()) {
-                        case RANDOM -> {
+                        case RANDOM: {
                             List<Integer> idx = new ArrayList<>();
                             for (int i = 0; i < extractableList.size(); ++i) idx.add(i);
                             Collections.shuffle(idx);
@@ -77,7 +77,7 @@ public class TransferService<T extends TransferVariant> extends HandlerService<T
                             }
                             break;
                         }
-                        case SPLIT, FORCE_SPLIT -> {
+                        case SPLIT, FORCE_SPLIT: {
                             try (Transaction transaction = Transaction.openOuter()) {
                                 for (StorageView<T> view : insertable.getStorage().iterable(transaction)) {
                                     if (view.isResourceBlank()) continue;
@@ -110,7 +110,7 @@ public class TransferService<T extends TransferVariant> extends HandlerService<T
                             }
                             break;
                         }
-                        case ROUND_ROBIN -> {
+                        case ROUND_ROBIN: {
 
                             break;
                         }

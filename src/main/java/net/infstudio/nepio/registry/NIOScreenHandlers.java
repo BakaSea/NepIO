@@ -3,10 +3,7 @@ package net.infstudio.nepio.registry;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
 import net.infstudio.nepio.NepIO;
-import net.infstudio.nepio.screen.FilterUpgradeScreenHandler;
-import net.infstudio.nepio.screen.IOPortScreenHandler;
-import net.infstudio.nepio.screen.InputPortScreenHandler;
-import net.infstudio.nepio.screen.PriorityUpgradeScreenHandler;
+import net.infstudio.nepio.screen.*;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -36,6 +33,12 @@ public class NIOScreenHandlers implements ModInitializer {
         Registry.SCREEN_HANDLER,
         new Identifier(NepIO.MODID, "priority_upgrade_screen_handler"),
         new ExtendedScreenHandlerType<>(PriorityUpgradeScreenHandler::new)
+    );
+
+    public static final ExtendedScreenHandlerType<RedstoneUpgradeScreenHandler> REDSTONE_UPGRADE_SCREEN_HANDLER = Registry.register(
+        Registry.SCREEN_HANDLER,
+        new Identifier(NepIO.MODID, "redstone_upgrade_screen_handler"),
+        new ExtendedScreenHandlerType<>(RedstoneUpgradeScreenHandler::new)
     );
 
     @Override
