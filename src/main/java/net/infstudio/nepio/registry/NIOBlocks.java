@@ -2,6 +2,7 @@ package net.infstudio.nepio.registry;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.infstudio.nepio.block.TankBlock;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.infstudio.nepio.NepIO;
@@ -18,6 +19,12 @@ public class NIOBlocks implements ModInitializer {
     private static ArrayList<BlockDef> blockDefs = new ArrayList<>();
 
     public static final BlockDef NEP_CABLE = new BlockDef(new NepCable(), "nep_cable");
+
+    public static final BlockDef TANK_1 = new BlockDef(new TankBlock(1), "tank_1");
+    public static final BlockDef TANK_2 = new BlockDef(new TankBlock(2), "tank_2");
+    public static final BlockDef TANK_3 = new BlockDef(new TankBlock(3), "tank_3");
+    public static final BlockDef TANK_4 = new BlockDef(new TankBlock(4), "tank_4");
+    public static final BlockDef TANK_5 = new BlockDef(new TankBlock(5), "tank_5");
 
     public void onInitialize() {
         for (BlockDef blockDef : blockDefs) {
