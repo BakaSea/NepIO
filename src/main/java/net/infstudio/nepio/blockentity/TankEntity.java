@@ -16,7 +16,7 @@ public class TankEntity extends AbstractStorageEntity<FluidVariant> {
 
     public TankEntity(BlockPos pos, BlockState state) {
         super(NIOBlockEntities.TANK_ENTITY, pos, state);
-        capacity = TankBlock.getCapacity(state.get(AbstractStorageBlock.LEVEL));
+        capacity = TankBlock.getCapacity(((AbstractStorageBlock) state.getBlock()).getLevel());
     }
 
     @Override

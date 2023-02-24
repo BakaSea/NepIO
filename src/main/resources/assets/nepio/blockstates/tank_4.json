@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "nepio:block/tank/tank_4"
+    }
+  }
+}

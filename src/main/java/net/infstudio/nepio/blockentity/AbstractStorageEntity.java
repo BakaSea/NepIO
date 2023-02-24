@@ -11,9 +11,14 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.Packet;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractStorageEntity<T extends TransferVariant<?>> extends BlockEntity {
 
@@ -41,7 +46,7 @@ public abstract class AbstractStorageEntity<T extends TransferVariant<?>> extend
 
     public AbstractStorageEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
-        //storage.variant = getBlankVariant();
+        storage.variant = getBlankVariant();
     }
 
     public SingleVariantStorage<T> getStorage() {
@@ -57,10 +62,19 @@ public abstract class AbstractStorageEntity<T extends TransferVariant<?>> extend
     @Override
     protected void writeNbt(NbtCompound nbt) {
         super.writeNbt(nbt);
-        if (!storage.isResourceBlank()) {
-            nbt.put("variant", storage.variant.toNbt());
-            nbt.putLong("amount", storage.amount);
-        }
+        nbt.put("variant", storage.variant.toNbt());
+        nbt.putLong("amount", storage.amount);
+    }
+
+    @Nullable
+    @Override
+    public Packet<ClientPlayPacketListener> toUpdatePacket() {
+        return BlockEntityUpdateS2CPacket.create(this);
+    }
+
+    @Override
+    public NbtCompound toInitialChunkDataNbt() {
+        return createNbt();
     }
 
     protected abstract T getBlankVariant();
@@ -68,14 +82,29 @@ public abstract class AbstractStorageEntity<T extends TransferVariant<?>> extend
     protected abstract ItemApiLookup<Storage<T>, ContainerItemContext> getLookup();
 
     public boolean insert(PlayerEntity player, Hand hand) {
+        ItemStack itemStack = null;
+        if (player.isCreative()) {
+            itemStack = player.getStackInHand(hand).copy();
+        }
         Storage<T> playerHand = ContainerItemContext.ofPlayerHand(player, hand).find(getLookup());
-        return StorageUtil.move(playerHand, storage, f -> true, Long.MAX_VALUE, null) > 0;
+        boolean flag = StorageUtil.move(playerHand, storage, f -> true, Long.MAX_VALUE, null) > 0;
+        if (player.isCreative() && itemStack != null) {
+            player.setStackInHand(hand, itemStack);
+        }
+        return flag;
     }
 
     public boolean extract(PlayerEntity player, Hand hand) {
+        ItemStack itemStack = null;
+        if (player.isCreative()) {
+            itemStack = player.getStackInHand(hand).copy();
+        }
         Storage<T> playerHand = ContainerItemContext.ofPlayerHand(player, hand).find(getLookup());
-        long k = StorageUtil.move(storage, playerHand, f -> true, Long.MAX_VALUE, null);
-        return k > 0;
+        boolean flag = StorageUtil.move(storage, playerHand, f -> true, Long.MAX_VALUE, null) > 0;
+        if (player.isCreative() && itemStack != null) {
+            player.setStackInHand(hand, itemStack);
+        }
+        return flag;
     }
 
 }
