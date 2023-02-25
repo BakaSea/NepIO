@@ -2,11 +2,11 @@ package net.infstudio.nepio.blockentity;
 
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -40,6 +40,8 @@ public abstract class AbstractStorageEntity<T extends TransferVariant<?>> extend
         protected void onFinalCommit() {
             super.onFinalCommit();
             markDirty();
+            BlockState state = world.getBlockState(pos);
+            world.updateListeners(pos, state, state, Block.NOTIFY_LISTENERS);
         }
 
     };
@@ -76,8 +78,6 @@ public abstract class AbstractStorageEntity<T extends TransferVariant<?>> extend
     public NbtCompound toInitialChunkDataNbt() {
         return createNbt();
     }
-
-
 
     protected abstract T getBlankVariant();
 

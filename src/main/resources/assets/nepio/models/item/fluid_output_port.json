@@ -1,0 +1,58 @@
+{
+	"parent": "nepio:item/part_base",
+	"texture_size": [32, 32],
+	"textures": {
+		"0": "nepio:item/part/fluid_output_port",
+		"particle": "nepio:item/part/fluid_output_port"
+	},
+	"elements": [
+		{
+			"from": [2, 2, 0],
+			"to": [14, 14, 2],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
+			"faces": {
+				"north": {"uv": [0, 0, 6, 6], "texture": "#0"},
+				"east": {"uv": [6, 8, 7, 14], "texture": "#0"},
+				"south": {"uv": [0, 6, 6, 12], "texture": "#0"},
+				"west": {"uv": [7, 8, 8, 14], "texture": "#0"},
+				"up": {"uv": [14, 9, 8, 8], "texture": "#0"},
+				"down": {"uv": [14, 9, 8, 10], "texture": "#0"}
+			}
+		},
+		{
+			"from": [4, 4, 2],
+			"to": [12, 12, 4],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
+			"faces": {
+				"north": {"uv": [6, 0, 10, 4], "texture": "#0"},
+				"east": {"uv": [10, 0, 11, 4], "texture": "#0"},
+				"south": {"uv": [6, 4, 10, 8], "texture": "#0"},
+				"west": {"uv": [10, 4, 11, 8], "texture": "#0"},
+				"up": {"uv": [12, 11, 8, 10], "texture": "#0"},
+				"down": {"uv": [15, 0, 11, 1], "texture": "#0"}
+			}
+		},
+		{
+			"from": [6, 6, 4],
+			"to": [10, 10, 6],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
+			"faces": {
+				"north": {"uv": [11, 1, 13, 3], "texture": "#0"},
+				"east": {"uv": [11, 5, 12, 7], "texture": "#0"},
+				"south": {"uv": [11, 3, 13, 5], "texture": "#0"},
+				"west": {"uv": [8, 11, 9, 13], "texture": "#0"},
+				"up": {"uv": [13, 8, 11, 7], "texture": "#0"},
+				"down": {"uv": [11, 11, 9, 12], "texture": "#0"}
+			}
+		}
+	],
+	"display": {},
+	"groups": [
+		{
+			"name": "group",
+			"origin": [0, 0, 0],
+			"color": 0,
+			"children": [0, 1, 2]
+		}
+	]
+}
