@@ -20,27 +20,39 @@ public class NIOBlocks implements ModInitializer {
 
     public static final BlockDef NEP_CABLE = new BlockDef(new NepCable(), "nep_cable");
 
-    public static final BlockDef TANK_1 = new BlockDef(new TankBlock(1), "tank_1");
-    public static final BlockDef TANK_2 = new BlockDef(new TankBlock(2), "tank_2");
-    public static final BlockDef TANK_3 = new BlockDef(new TankBlock(3), "tank_3");
-    public static final BlockDef TANK_4 = new BlockDef(new TankBlock(4), "tank_4");
-    public static final BlockDef TANK_5 = new BlockDef(new TankBlock(5), "tank_5");
+    public static final BlockDef TANK_1 = new BlockDef(new TankBlock(1), "tank_1", true);
+    public static final BlockDef TANK_2 = new BlockDef(new TankBlock(2), "tank_2", true);
+    public static final BlockDef TANK_3 = new BlockDef(new TankBlock(3), "tank_3", true);
+    public static final BlockDef TANK_4 = new BlockDef(new TankBlock(4), "tank_4", true);
+    public static final BlockDef TANK_5 = new BlockDef(new TankBlock(5), "tank_5", true);
 
     public void onInitialize() {
         for (BlockDef blockDef : blockDefs) {
             Registry.register(Registry.BLOCK, new Identifier(NepIO.MODID, blockDef.getId()), blockDef.get());
-            Registry.register(Registry.ITEM, new Identifier(NepIO.MODID, blockDef.getId()), blockDef.getItem());
+            if (!blockDef.isIndependentItem()) Registry.register(Registry.ITEM, new Identifier(NepIO.MODID, blockDef.getId()), blockDef.getItem());
         }
     }
 
     public static class BlockDef extends RegistryDef<Block> {
 
         private BlockItem item;
+        private boolean independentItem;
 
         public BlockDef(Block definition, String id) {
             super(definition, id);
             item = new BlockItem(definition, new FabricItemSettings().group(NepIO.NEP_GROUP));
             blockDefs.add(this);
+        }
+
+        public BlockDef(Block definition, String id, boolean independentItem) {
+            super(definition, id);
+            this.independentItem = independentItem;
+            if (!independentItem) item = new BlockItem(definition, new FabricItemSettings().group(NepIO.NEP_GROUP));
+            blockDefs.add(this);
+        }
+
+        public boolean isIndependentItem() {
+            return independentItem;
         }
 
         public BlockItem getItem() {

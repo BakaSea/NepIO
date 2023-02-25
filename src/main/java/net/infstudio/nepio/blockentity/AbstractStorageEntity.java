@@ -77,6 +77,8 @@ public abstract class AbstractStorageEntity<T extends TransferVariant<?>> extend
         return createNbt();
     }
 
+
+
     protected abstract T getBlankVariant();
 
     protected abstract ItemApiLookup<Storage<T>, ContainerItemContext> getLookup();
