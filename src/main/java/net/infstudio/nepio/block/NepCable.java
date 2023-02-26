@@ -1,11 +1,10 @@
 package net.infstudio.nepio.block;
 
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.infstudio.nepio.blockentity.NepCableEntity;
 import net.infstudio.nepio.blockentity.part.PartBaseEntity;
+import net.infstudio.nepio.registry.NIOBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Material;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -50,7 +49,7 @@ public class NepCable extends NIOBaseBlock {
     }
 
     public NepCable() {
-        super(FabricBlockSettings.of(Material.METAL));
+        super(NIOBlocks.getDefaultSettings());
         setDefaultState(getStateManager().getDefaultState()
             .with(NORTH, false)
             .with(EAST, false)

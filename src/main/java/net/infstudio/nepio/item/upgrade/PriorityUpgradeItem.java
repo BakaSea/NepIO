@@ -1,14 +1,14 @@
 package net.infstudio.nepio.item.upgrade;
 
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.infstudio.nepio.item.BaseItem;
 import net.infstudio.nepio.network.api.upgrade.IUpgrade;
 import net.infstudio.nepio.network.api.upgrade.PriorityUpgrade;
+import net.infstudio.nepio.registry.NIOItems;
 
 public class PriorityUpgradeItem extends BaseItem implements IUpgradeItem {
 
     public PriorityUpgradeItem() {
-        super(new FabricItemSettings());
+        super(NIOItems.getDefaultSettings());
     }
 
     @Override

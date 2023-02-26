@@ -1,11 +1,11 @@
 package net.infstudio.nepio.item;
 
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.infstudio.nepio.registry.NIOItems;
 
 public class BaseItemImpl extends BaseItem {
 
     public BaseItemImpl() {
-        super(new FabricItemSettings());
+        super(NIOItems.getDefaultSettings());
     }
 
 }

@@ -1,0 +1,8 @@
+{
+  "parent": "block/orientable",
+  "textures": {
+    "top": "nepio:block/barrel/barrel_side",
+    "front": "nepio:block/barrel/barrel_1",
+    "side": "nepio:block/barrel/barrel_side"
+  }
+}

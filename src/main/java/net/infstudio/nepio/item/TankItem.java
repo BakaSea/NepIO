@@ -5,16 +5,15 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
-import net.infstudio.nepio.block.TankBlock;
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.MutableText;
 
 public class TankItem extends AbstractStorageItem<FluidVariant>  {
 
-    public TankItem(TankBlock block) {
+    public TankItem(Block block) {
         super(block);
-        capacity = TankBlock.getCapacity(block.getLevel());
     }
 
     @Override

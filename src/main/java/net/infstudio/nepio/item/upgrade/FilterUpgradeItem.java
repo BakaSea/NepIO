@@ -1,16 +1,16 @@
 package net.infstudio.nepio.item.upgrade;
 
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.infstudio.nepio.item.BaseItem;
 import net.infstudio.nepio.network.api.upgrade.FilterUpgrade;
 import net.infstudio.nepio.network.api.upgrade.IUpgrade;
+import net.infstudio.nepio.registry.NIOItems;
 
 public class FilterUpgradeItem extends BaseItem implements IUpgradeItem {
 
     private int size;
 
     public FilterUpgradeItem(int size) {
-        super(new FabricItemSettings());
+        super(NIOItems.getDefaultSettings());
         this.size = size;
     }
 

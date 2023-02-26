@@ -1,9 +1,9 @@
 package net.infstudio.nepio.item.part;
 
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.infstudio.nepio.blockentity.NIOBaseBlockEntity;
 import net.infstudio.nepio.blockentity.part.InputPortEntity;
 import net.infstudio.nepio.blockentity.part.PartBaseEntity;
+import net.infstudio.nepio.registry.NIOItems;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
@@ -21,7 +21,7 @@ public class InputPort extends PartBaseItem {
     private static final Map<Direction, VoxelShape> SHAPE_CACHE = new HashMap<>();
 
     public InputPort() {
-        super(new FabricItemSettings());
+        super(NIOItems.getDefaultSettings());
     }
 
     @Override

@@ -1,6 +1,5 @@
 package net.infstudio.nepio.item.part;
 
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.infstudio.nepio.blockentity.NIOBaseBlockEntity;
 import net.infstudio.nepio.blockentity.part.FluidInputPortEntity;
 import net.infstudio.nepio.blockentity.part.PartBaseEntity;
@@ -11,7 +10,7 @@ import net.minecraft.util.shape.VoxelShape;
 public class FluidInputPort extends PartBaseItem {
 
     public FluidInputPort() {
-        super(new FabricItemSettings());
+        super(NIOItems.getDefaultSettings());
     }
 
     @Override

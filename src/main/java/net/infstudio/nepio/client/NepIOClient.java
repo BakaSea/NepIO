@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.infstudio.nepio.client.gui.screen.*;
+import net.infstudio.nepio.client.render.BarrelBER;
 import net.infstudio.nepio.client.render.NepCableBER;
 import net.infstudio.nepio.client.render.TankBER;
 import net.infstudio.nepio.registry.NIOBlockEntities;
@@ -39,8 +40,14 @@ public class NepIOClient implements ClientModInitializer {
             NIOBlocks.TANK_1.get(), NIOBlocks.TANK_2.get(), NIOBlocks.TANK_3.get(), NIOBlocks.TANK_4.get(), NIOBlocks.TANK_5.get());
 
         BlockEntityRendererRegistry.register(NIOBlockEntities.NEP_CABLE_ENTITY, NepCableBER::new);
+        BlockEntityRendererRegistry.register(NIOBlockEntities.BARREL_ENTITY, BarrelBER::new);
         BlockEntityRendererRegistry.register(NIOBlockEntities.TANK_ENTITY, TankBER::new);
 
+        BuiltinItemRendererRegistry.INSTANCE.register(NIOItems.BARREL_1.get(), NepIOClient::renderItemBlockEntity);
+        BuiltinItemRendererRegistry.INSTANCE.register(NIOItems.BARREL_2.get(), NepIOClient::renderItemBlockEntity);
+        BuiltinItemRendererRegistry.INSTANCE.register(NIOItems.BARREL_3.get(), NepIOClient::renderItemBlockEntity);
+        BuiltinItemRendererRegistry.INSTANCE.register(NIOItems.BARREL_4.get(), NepIOClient::renderItemBlockEntity);
+        BuiltinItemRendererRegistry.INSTANCE.register(NIOItems.BARREL_5.get(), NepIOClient::renderItemBlockEntity);
         BuiltinItemRendererRegistry.INSTANCE.register(NIOItems.TANK_1.get(), NepIOClient::renderItemBlockEntity);
         BuiltinItemRendererRegistry.INSTANCE.register(NIOItems.TANK_2.get(), NepIOClient::renderItemBlockEntity);
         BuiltinItemRendererRegistry.INSTANCE.register(NIOItems.TANK_3.get(), NepIOClient::renderItemBlockEntity);

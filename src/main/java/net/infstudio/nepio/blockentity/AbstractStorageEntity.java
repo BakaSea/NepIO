@@ -1,28 +1,27 @@
 package net.infstudio.nepio.blockentity;
 
-import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
+import net.infstudio.nepio.block.AbstractStorageBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.util.Hand;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class AbstractStorageEntity<T extends TransferVariant<?>> extends BlockEntity {
+public abstract class AbstractStorageEntity<T extends TransferVariant<?>> extends BlockEntity implements WrenchableEntity {
 
-    protected long capacity;
+    protected final AbstractStorageBlock<T> block;
 
     protected final SingleVariantStorage<T> storage = new SingleVariantStorage<T>() {
 
@@ -33,21 +32,24 @@ public abstract class AbstractStorageEntity<T extends TransferVariant<?>> extend
 
         @Override
         protected long getCapacity(T variant) {
-            return capacity;
+            return AbstractStorageEntity.this.getCapacity(variant);
         }
 
         @Override
         protected void onFinalCommit() {
             super.onFinalCommit();
             markDirty();
-            BlockState state = world.getBlockState(pos);
-            world.updateListeners(pos, state, state, Block.NOTIFY_LISTENERS);
+            if (!world.isClient) {
+                BlockState state = world.getBlockState(pos);
+                world.updateListeners(pos, state, state, Block.NOTIFY_LISTENERS);
+            }
         }
 
     };
 
     public AbstractStorageEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
+        block = (AbstractStorageBlock<T>) state.getBlock();
         storage.variant = getBlankVariant();
     }
 
@@ -81,32 +83,21 @@ public abstract class AbstractStorageEntity<T extends TransferVariant<?>> extend
 
     protected abstract T getBlankVariant();
 
-    protected abstract ItemApiLookup<Storage<T>, ContainerItemContext> getLookup();
-
-    public boolean insert(PlayerEntity player, Hand hand) {
-        ItemStack itemStack = null;
-        if (player.isCreative()) {
-            itemStack = player.getStackInHand(hand).copy();
-        }
-        Storage<T> playerHand = ContainerItemContext.ofPlayerHand(player, hand).find(getLookup());
-        boolean flag = StorageUtil.move(playerHand, storage, f -> true, Long.MAX_VALUE, null) > 0;
-        if (player.isCreative() && itemStack != null) {
-            player.setStackInHand(hand, itemStack);
-        }
-        return flag;
+    protected long getCapacity(T variant) {
+        return block.getCapacity(variant);
     }
 
-    public boolean extract(PlayerEntity player, Hand hand) {
-        ItemStack itemStack = null;
-        if (player.isCreative()) {
-            itemStack = player.getStackInHand(hand).copy();
+    @Override
+    public ActionResult useWrench(ItemUsageContext context) {
+        World world = context.getWorld();
+        BlockPos blockPos = context.getBlockPos();
+        if (context.getPlayer().isSneaking()) {
+            Vec3d hitPos = context.getHitPos();
+            world.spawnEntity(new ItemEntity(world, hitPos.x, hitPos.y, hitPos.z, block.getPickStack(world, blockPos, getCachedState())));
+            world.removeBlock(blockPos, false);
+            return ActionResult.SUCCESS;
         }
-        Storage<T> playerHand = ContainerItemContext.ofPlayerHand(player, hand).find(getLookup());
-        boolean flag = StorageUtil.move(storage, playerHand, f -> true, Long.MAX_VALUE, null) > 0;
-        if (player.isCreative() && itemStack != null) {
-            player.setStackInHand(hand, itemStack);
-        }
-        return flag;
+        return ActionResult.PASS;
     }
 
 }

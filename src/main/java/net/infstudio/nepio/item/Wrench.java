@@ -1,24 +1,26 @@
 package net.infstudio.nepio.item;
 
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.infstudio.nepio.blockentity.NIOBaseBlockEntity;
+import net.infstudio.nepio.blockentity.WrenchableEntity;
+import net.infstudio.nepio.registry.NIOItems;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.world.World;
 
 public class Wrench extends BaseItem {
 
     public Wrench() {
-        super(new FabricItemSettings());
+        super(NIOItems.getDefaultSettings());
     }
 
-    @Override
-    public ActionResult useOnBlock(ItemUsageContext context) {
-        World world = context.getWorld();
-        if (!world.isClient() && world.getBlockEntity(context.getBlockPos()) instanceof NIOBaseBlockEntity blockEntity) {
-            return blockEntity.useWrench(context);
+    public static ActionResult interact(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
+        if (player.getStackInHand(hand).getItem() == NIOItems.WRENCH.get()
+            && !world.isClient() && world.getBlockEntity(hitResult.getBlockPos()) instanceof WrenchableEntity entity) {
+            return entity.useWrench(new ItemUsageContext(player, hand, hitResult));
         }
-        return ActionResult.SUCCESS;
+        return ActionResult.PASS;
     }
 
 }

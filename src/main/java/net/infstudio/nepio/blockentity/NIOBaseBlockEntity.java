@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  * Base block entity of Nep IO (Network block entity).
  * Use with {@link net.infstudio.nepio.block.NIOBaseBlock}
  */
-public abstract class NIOBaseBlockEntity extends BlockEntity implements INetworkEntity {
+public abstract class NIOBaseBlockEntity extends BlockEntity implements INetworkEntity, WrenchableEntity {
 
     protected NNetworkNode networkNode;
     protected Item blockItem;
@@ -84,8 +84,6 @@ public abstract class NIOBaseBlockEntity extends BlockEntity implements INetwork
         return ActionResult.PASS;
     }
 
-    public void dropItems(World world, BlockPos pos) {
-
-    }
+    public void dropItems(World world, BlockPos pos) {}
 
 }
