@@ -2,6 +2,7 @@ package net.infstudio.nepio.item;
 
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
@@ -75,14 +76,36 @@ public abstract class AbstractStorageItem<T extends TransferVariant<?>> extends 
 
         @Override
         public long insert(T insertedVariant, long maxAmount, TransactionContext transaction) {
-            long k = super.insert(insertedVariant, maxAmount, transaction);
+            long k = 0;
+            if (((AbstractStorageBlock<T>) getBlock()).isCreative()) {
+                StoragePreconditions.notBlankNotNegative(insertedVariant, maxAmount);
+                if (variant.isBlank() && canInsert(insertedVariant)) {
+                    if (maxAmount > 0) {
+                        updateSnapshots(transaction);
+                        if (variant.isBlank()) {
+                            variant = insertedVariant;
+                            amount = 1;
+                        }
+                        k = maxAmount;
+                    }
+                }
+            } else k = super.insert(insertedVariant, maxAmount, transaction);
             updateItemStack(transaction);
             return k;
         }
 
         @Override
         public long extract(T extractedVariant, long maxAmount, TransactionContext transaction) {
-            long k = super.extract(extractedVariant, maxAmount, transaction);
+            long k = 0;
+            if (((AbstractStorageBlock<T>) getBlock()).isCreative()) {
+                StoragePreconditions.notBlankNotNegative(extractedVariant, maxAmount);
+                if (extractedVariant.equals(variant) && canExtract(extractedVariant)) {
+                    if (maxAmount > 0) {
+                        updateSnapshots(transaction);
+                        k = maxAmount;
+                    }
+                }
+            } else k = super.extract(extractedVariant, maxAmount, transaction);
             updateItemStack(transaction);
             return k;
         }

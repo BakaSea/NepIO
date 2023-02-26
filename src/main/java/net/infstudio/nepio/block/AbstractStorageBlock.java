@@ -20,6 +20,8 @@ public abstract class AbstractStorageBlock<T extends TransferVariant<?>> extends
         return level;
     }
 
+    public boolean isCreative() { return level == 0; }
+
     public abstract long getCapacity(T variant);
 
     @Override

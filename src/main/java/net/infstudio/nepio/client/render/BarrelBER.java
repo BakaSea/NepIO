@@ -47,7 +47,7 @@ public class BarrelBER implements BlockEntityRenderer<BarrelEntity> {
         matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion((2-direction.getHorizontal())*90));
         matrices.translate(0, 0.0875, -0.505);
         matrices.scale(-0.01F, -0.01F, -0.01F);
-        String amount = String.valueOf(entity.getStorage().amount);
+        String amount = entity.isCreative() ? "∞" : String.valueOf(entity.getStorage().amount);
         float x = -textRenderer.getWidth(amount)/2F;
         textRenderer.draw(amount, x, -4F+40, 0x000000, false, matrices.peek().getPositionMatrix(), vertexConsumers, false, 0, light);
         matrices.pop();

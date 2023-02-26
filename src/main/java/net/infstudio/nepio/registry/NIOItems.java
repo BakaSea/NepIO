@@ -47,12 +47,14 @@ public class NIOItems implements ModInitializer {
     public static final ItemDef SPEED_UPGRADE_5 = new ItemDef(new SpeedUpgradeItem(3), "speed_upgrade_5");
     public static final ItemDef REDSTONE_UPGRADE = new ItemDef(new RedstoneUpgradeItem(), "redstone_upgrade");
 
+    public static final ItemDef CREATIVE_BARREL = new ItemDef(new BarrelItem(NIOBlocks.CREATIVE_BARREL.get()), "creative_barrel");
     public static final ItemDef BARREL_1 = new ItemDef(new BarrelItem(NIOBlocks.BARREL_1.get()), "barrel_1");
     public static final ItemDef BARREL_2 = new ItemDef(new BarrelItem(NIOBlocks.BARREL_2.get()), "barrel_2");
     public static final ItemDef BARREL_3 = new ItemDef(new BarrelItem(NIOBlocks.BARREL_3.get()), "barrel_3");
     public static final ItemDef BARREL_4 = new ItemDef(new BarrelItem(NIOBlocks.BARREL_4.get()), "barrel_4");
     public static final ItemDef BARREL_5 = new ItemDef(new BarrelItem(NIOBlocks.BARREL_5.get()), "barrel_5");
 
+    public static final ItemDef CREATIVE_TANK = new ItemDef(new TankItem(NIOBlocks.CREATIVE_TANK.get()), "creative_tank");
     public static final ItemDef TANK_1 = new ItemDef(new TankItem(NIOBlocks.TANK_1.get()), "tank_1");
     public static final ItemDef TANK_2 = new ItemDef(new TankItem(NIOBlocks.TANK_2.get()), "tank_2");
     public static final ItemDef TANK_3 = new ItemDef(new TankItem(NIOBlocks.TANK_3.get()), "tank_3");
@@ -63,7 +65,7 @@ public class NIOItems implements ModInitializer {
         for (ItemDef itemDef : itemDefs) {
             Registry.register(Registry.ITEM, new Identifier(NepIO.MODID, itemDef.getId()), itemDef.get());
         }
-        FluidStorage.ITEM.registerForItems(TankItem::getFluidStorage, TANK_1.get(), TANK_2.get(), TANK_3.get(), TANK_4.get(), TANK_5.get());
+        FluidStorage.ITEM.registerForItems(TankItem::getFluidStorage, CREATIVE_TANK.get(), TANK_1.get(), TANK_2.get(), TANK_3.get(), TANK_4.get(), TANK_5.get());
     }
 
     public static FabricItemSettings getDefaultSettings() {

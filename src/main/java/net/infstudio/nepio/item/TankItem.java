@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
+import net.infstudio.nepio.block.AbstractStorageBlock;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -34,7 +35,7 @@ public class TankItem extends AbstractStorageItem<FluidVariant>  {
 
     @Override
     protected String getAmountCapacity(long amount, long capacity) {
-        return amount/81+"/"+capacity/81+"mB";
+        return ((AbstractStorageBlock<FluidVariant>)getBlock()).isCreative() ? "∞mB" : amount/81+"/"+capacity/81+"mB";
     }
 
     public static Storage<FluidVariant> getFluidStorage(ItemStack stack, ContainerItemContext context) {

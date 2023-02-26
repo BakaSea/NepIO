@@ -1,7 +1,9 @@
 package net.infstudio.nepio.blockentity;
 
+import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.infstudio.nepio.block.AbstractStorageBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -26,13 +28,45 @@ public abstract class AbstractStorageEntity<T extends TransferVariant<?>> extend
     protected final SingleVariantStorage<T> storage = new SingleVariantStorage<T>() {
 
         @Override
+        public long insert(T insertedVariant, long maxAmount, TransactionContext transaction) {
+            if (isCreative()) {
+                StoragePreconditions.notBlankNotNegative(insertedVariant, maxAmount);
+                if (variant.isBlank() && canInsert(insertedVariant)) {
+                    if (maxAmount > 0) {
+                        updateSnapshots(transaction);
+                        if (variant.isBlank()) {
+                            variant = insertedVariant;
+                            amount = 1;
+                        }
+                        return maxAmount;
+                    }
+                }
+                return 0;
+            } else return super.insert(insertedVariant, maxAmount, transaction);
+        }
+
+        @Override
+        public long extract(T extractedVariant, long maxAmount, TransactionContext transaction) {
+            if (isCreative()) {
+                StoragePreconditions.notBlankNotNegative(extractedVariant, maxAmount);
+                if (extractedVariant.equals(variant) && canExtract(extractedVariant)) {
+                    if (maxAmount > 0) {
+                        updateSnapshots(transaction);
+                        return maxAmount;
+                    }
+                }
+                return 0;
+            } else return super.extract(extractedVariant, maxAmount, transaction);
+        }
+
+        @Override
         protected T getBlankVariant() {
             return AbstractStorageEntity.this.getBlankVariant();
         }
 
         @Override
         protected long getCapacity(T variant) {
-            return AbstractStorageEntity.this.getCapacity(variant);
+            return block.getCapacity(variant);
         }
 
         @Override
@@ -83,8 +117,8 @@ public abstract class AbstractStorageEntity<T extends TransferVariant<?>> extend
 
     protected abstract T getBlankVariant();
 
-    protected long getCapacity(T variant) {
-        return block.getCapacity(variant);
+    public boolean isCreative() {
+        return block.isCreative();
     }
 
     @Override

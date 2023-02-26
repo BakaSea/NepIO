@@ -26,14 +26,16 @@ public class NIOBlockEntities implements ModInitializer {
         Registry.BLOCK_ENTITY_TYPE,
         new Identifier(NepIO.MODID, "barrel_entity"),
         FabricBlockEntityTypeBuilder.create(BarrelEntity::new,
-            NIOBlocks.BARREL_1.get(), NIOBlocks.BARREL_2.get(), NIOBlocks.BARREL_3.get(), NIOBlocks.BARREL_4.get(), NIOBlocks.BARREL_5.get()).build()
+            NIOBlocks.CREATIVE_BARREL.get(), NIOBlocks.BARREL_1.get(), NIOBlocks.BARREL_2.get(), NIOBlocks.BARREL_3.get(), NIOBlocks.BARREL_4.get(), NIOBlocks.BARREL_5.get())
+            .build()
     );
 
     public static final BlockEntityType<TankEntity> TANK_ENTITY = Registry.register(
         Registry.BLOCK_ENTITY_TYPE,
         new Identifier(NepIO.MODID, "tank_entity"),
         FabricBlockEntityTypeBuilder.create(TankEntity::new,
-            NIOBlocks.TANK_1.get(), NIOBlocks.TANK_2.get(), NIOBlocks.TANK_3.get(), NIOBlocks.TANK_4.get(), NIOBlocks.TANK_5.get()).build()
+            NIOBlocks.CREATIVE_TANK.get(), NIOBlocks.TANK_1.get(), NIOBlocks.TANK_2.get(), NIOBlocks.TANK_3.get(), NIOBlocks.TANK_4.get(), NIOBlocks.TANK_5.get())
+            .build()
     );
 
     public void onInitialize() {

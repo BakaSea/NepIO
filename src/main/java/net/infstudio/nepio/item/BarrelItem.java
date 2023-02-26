@@ -2,6 +2,7 @@ package net.infstudio.nepio.item;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
+import net.infstudio.nepio.block.AbstractStorageBlock;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.MutableText;
@@ -30,7 +31,7 @@ public class BarrelItem extends AbstractStorageItem<ItemVariant> {
 
     @Override
     protected String getAmountCapacity(long amount, long capacity) {
-        return amount+"/"+capacity;
+        return ((AbstractStorageBlock<ItemVariant>) getBlock()).isCreative() ? "∞" : amount+"/"+capacity;
     }
 
 }

@@ -23,13 +23,14 @@ public class NIOBlocks implements ModInitializer {
 
     public static final BlockDef NEP_CABLE = new BlockDef(new NepCable(), "nep_cable");
 
+    public static final BlockDef CREATIVE_BARREL = new BlockDef(new BarrelBlock(0), "creative_barrel", true);
     public static final BlockDef BARREL_1 = new BlockDef(new BarrelBlock(1), "barrel_1", true);
     public static final BlockDef BARREL_2 = new BlockDef(new BarrelBlock(2), "barrel_2", true);
     public static final BlockDef BARREL_3 = new BlockDef(new BarrelBlock(3), "barrel_3", true);
     public static final BlockDef BARREL_4 = new BlockDef(new BarrelBlock(4), "barrel_4", true);
     public static final BlockDef BARREL_5 = new BlockDef(new BarrelBlock(5), "barrel_5", true);
 
-
+    public static final BlockDef CREATIVE_TANK = new BlockDef(new TankBlock(0), "creative_tank", true);
     public static final BlockDef TANK_1 = new BlockDef(new TankBlock(1), "tank_1", true);
     public static final BlockDef TANK_2 = new BlockDef(new TankBlock(2), "tank_2", true);
     public static final BlockDef TANK_3 = new BlockDef(new TankBlock(3), "tank_3", true);
@@ -54,7 +55,7 @@ public class NIOBlocks implements ModInitializer {
 
         public BlockDef(Block definition, String id) {
             super(definition, id);
-            item = new BlockItem(definition, NIOItems.getDefaultSettings());
+            item = new BlockItem(definition, new FabricItemSettings().group(NepIO.NEP_GROUP));
             blockDefs.add(this);
         }
 

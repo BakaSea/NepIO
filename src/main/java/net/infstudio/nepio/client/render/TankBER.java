@@ -34,7 +34,7 @@ public class TankBER implements BlockEntityRenderer<TankEntity> {
         float g = (fluidColor >> 8 & 255)/255f;
         float b = (fluidColor & 255)/255f;
         VertexConsumer vc = vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE));
-        float fill = TANK_W+(1-2*TANK_W)*entity.getStorage().amount/entity.getStorage().getCapacity();
+        float fill = entity.isCreative() ? 1-TANK_W : TANK_W+(1-2*TANK_W)*entity.getStorage().amount/entity.getStorage().getCapacity();
         float topHeight = fill;
         float bottomHeight = TANK_W;
         if (FluidVariantAttributes.isLighterThanAir(fluid)) {
